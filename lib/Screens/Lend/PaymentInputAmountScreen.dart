@@ -7,6 +7,7 @@ import 'package:ngo_app/Constants/CommonMethods.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/EnumValues.dart';
+import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Screens/MakeDonation/AddDonorInfoScreen.dart';
 import 'PaymentScreen.dart';
@@ -20,11 +21,11 @@ class PaymentInputAmountScreen extends StatefulWidget {
 
   const PaymentInputAmountScreen(
       {Key key,
-      @required this.paymentType,
-      @required this.id,
-      this.amount = 0,
-      this.isCampaignRelated = false,
-      this.isForNgoTrust = false})
+        @required this.paymentType,
+        @required this.id,
+        this.amount = 0,
+        this.isCampaignRelated = false,
+        this.isForNgoTrust = false})
       : super(key: key);
 
   @override
@@ -75,114 +76,123 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
     var _blankFocusNode = new FocusNode();
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Color(colorCodeGreyPageBg),
-      resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(65.0),
-        child: Container(
-          child: Column(
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Text(
-                        "Donate",
-                        textAlign: TextAlign.left,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.white,
-                            height: 1.5,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17.0),
-                      ),
-                      flex: 1,
-                    ),
-                    IconButton(
-                      iconSize: 26,
-                      icon: Icon(
-                        Icons.close,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        Get.back();
-                        // CommonWidgets().showDonationAlertDialog();
-                      },
-                    ),
-                  ],
-                ),
-                flex: 1,
-              ),
-              Container(
-                width: double.infinity,
-                height: 0.5,
-                color: Colors.white,
-                margin: EdgeInsets.fromLTRB(15, 2, 15, 4),
-              )
-            ],
+          backgroundColor: Color(colorCodeGreyPageBg),
+          resizeToAvoidBottomInset: true,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(65.0),
+            child: CommonAppBar(
+              text: "Donate",
+              buttonHandler: _backPressFunction,
+            ),
+            // Container(
+            //   child: Column(
+            //     children: [
+            //       Expanded(
+            //         child: Row(
+            //           children: [
+            //             SizedBox(
+            //               width: 20,
+            //             ),
+            //             Expanded(
+            //               child: Text(
+            //                 "Donate",
+            //                 textAlign: TextAlign.left,
+            //                 maxLines: 1,
+            //                 overflow: TextOverflow.ellipsis,
+            //                 style: TextStyle(
+            //                     color: Colors.white,
+            //                     height: 1.5,
+            //                     fontWeight: FontWeight.w600,
+            //                     fontSize: 17.0),
+            //               ),
+            //               flex: 1,
+            //             ),
+            //             IconButton(
+            //               iconSize: 26,
+            //               icon: Icon(
+            //                 Icons.close,
+            //                 color: Colors.grey,
+            //               ),
+            //               onPressed: () {
+            //                 Get.back();
+            //                 // CommonWidgets().showDonationAlertDialog();
+            //               },
+            //             ),
+            //           ],
+            //         ),
+            //         flex: 1,
+            //       ),
+            //       Container(
+            //         width: double.infinity,
+            //         height: 0.5,
+            //         color: Colors.white,
+            //         margin: EdgeInsets.fromLTRB(15, 2, 15, 4),
+            //       )
+            //     ],
+            //   ),
+            // ),
           ),
-        ),
-      ),
-      body: Container(
-        color: Colors.transparent,
-        height: double.infinity,
-        width: double.infinity,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScope.of(context).requestFocus(_blankFocusNode);
-          },
-          child: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: MediaQuery.of(context).size.height * .02),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    alignment: FractionalOffset.center,
-                    child: Text(
-                      "Choose a donation amount",
-                      style: TextStyle(
-                          color: Color(colorCoderBorderWhite),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15.0),
-                    ),
+          body: Container(
+            color: Colors.transparent,
+            height: double.infinity,
+            width: double.infinity,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                FocusScope.of(context).requestFocus(_blankFocusNode);
+              },
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: MediaQuery.of(context).size.height * .02),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        alignment: FractionalOffset.center,
+                        child: Text(
+                          "Choose a donation amount",
+                          style: TextStyle(
+                              color: Color(colorCoderBorderWhite),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15.0),
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * .01),
+                      _buildAmountTypingSection(),
+                      SizedBox(height: MediaQuery.of(context).size.height * .01),
+                      Visibility(
+                        child: _buildSubscribeSection(),
+                        visible: widget.isCampaignRelated &&
+                            CommonMethods().isAuthTokenExist(),
+                      ),
+                      _buildAmountSuggestions(),
+                      SizedBox(height: MediaQuery.of(context).size.height * .04),
+                    ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * .01),
-                  _buildAmountTypingSection(),
-                  SizedBox(height: MediaQuery.of(context).size.height * .01),
-                  Visibility(
-                    child: _buildSubscribeSection(),
-                    visible: widget.isCampaignRelated &&
-                        CommonMethods().isAuthTokenExist(),
-                  ),
-                  _buildAmountSuggestions(),
-                  SizedBox(height: MediaQuery.of(context).size.height * .04),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        height: 50.0,
-        width: double.infinity,
-        margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
-        child: CommonButton(
-            buttonText: "Next",
-            bgColorReceived: Color(colorCoderRedBg),
-            borderColorReceived: Color(colorCoderRedBg),
-            textColorReceived: Color(colorCodeWhite),
-            buttonHandler: _nextBtnClickFunction),
-      ),
-    ));
+          bottomNavigationBar: Container(
+            height: 50.0,
+            width: double.infinity,
+            margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+            child: CommonButton(
+                buttonText: "Next",
+                bgColorReceived: Color(colorCoderRedBg),
+                borderColorReceived: Color(colorCoderRedBg),
+                textColorReceived: Color(colorCodeWhite),
+                buttonHandler: _nextBtnClickFunction),
+          ),
+        ));
+  }
+
+  void _backPressFunction() {
+    print("_sendOtpFunction clicked");
+    Get.back();
   }
 
   Future<void> _nextBtnClickFunction() async {
@@ -194,7 +204,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
           _textEditingController.text = "${widget.amount}";
           Fluttertoast.showToast(
               msg:
-                  'Please note just Rs.${widget.amount} more needed, Thank you');
+              'Please note just Rs.${widget.amount} more needed, Thank you');
           return;
         }
       }

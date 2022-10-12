@@ -30,7 +30,9 @@ class NgoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.red,
-          // cursorColor: Colors.red,
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: Colors.red,
+          ),
           fontFamily: 'Montserrat'),
       home: SplashScreen(),
     );
