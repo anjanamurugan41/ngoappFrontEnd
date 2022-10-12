@@ -8,6 +8,7 @@ import 'package:ngo_app/Constants/StringConstants.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Elements/CommonTextFormField.dart';
 import 'package:ngo_app/Screens/Lend/PaymentScreen.dart';
+import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
 
 class AdditionalInfoScreen extends StatefulWidget {
   final PaymentInfo paymentInfo;
@@ -271,7 +272,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
           mobile: _phone.trim());
 
       Get.to(
-          () => PaymentScreen(
+          () => PatymPaymentScrenn(
                 paymentInfo: paymentInfo,
               ),
           opaque: false,
