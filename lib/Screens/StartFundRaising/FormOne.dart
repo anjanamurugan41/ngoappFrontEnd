@@ -1,3 +1,4 @@
+
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:ngo_app/Constants/CommonMethods.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/StringConstants.dart';
+import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Elements/CommonLabelWidget.dart';
 import 'package:ngo_app/Elements/CommonTextFormField.dart';
@@ -61,57 +63,63 @@ class _FormOneScreenState extends State<FormOneScreen>
           resizeToAvoidBottomInset: true,
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(65.0), // here the desired height
-            child: Container(
-              color: Colors.transparent,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: Text(
-                            LoginModel().isFundraiserEditMode
-                                ? "Update Fundraiser"
-                                : "Start a Fundraiser",
-                            textAlign: TextAlign.left,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colors.white,
-                                height: 1.5,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17.0),
-                          ),
-                          flex: 1,
-                        ),
-                        IconButton(
-                          iconSize: 26,
-                          icon: Icon(
-                            Icons.close,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            Get.back();
-                          },
-                        ),
-                      ],
-                    ),
-                    flex: 1,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 0.5,
-                    color: Colors.white,
-                    margin: EdgeInsets.fromLTRB(15, 2, 15, 4),
-                  )
-                ],
-              ),
+            child: CommonAppBar(
+              text: LoginModel().isFundraiserEditMode
+                  ? "Update Fundraiser"
+                  : "Start a Fundraiser",
+              buttonHandler: _backPressFunction,
             ),
+            // Container(
+            //   color: Colors.transparent,
+            //   child: Column(
+            //     children: [
+            //       Expanded(
+            //         child: Row(
+            //           mainAxisAlignment: MainAxisAlignment.start,
+            //           crossAxisAlignment: CrossAxisAlignment.center,
+            //           children: [
+            //             SizedBox(
+            //               width: 20,
+            //             ),
+            //             Expanded(
+            //               child: Text(
+            //                 LoginModel().isFundraiserEditMode
+            //                     ? "Update Fundraiser"
+            //                     : "Start a Fundraiser",
+            //                 textAlign: TextAlign.left,
+            //                 maxLines: 1,
+            //                 overflow: TextOverflow.ellipsis,
+            //                 style: TextStyle(
+            //                     color: Colors.white,
+            //                     height: 1.5,
+            //                     fontWeight: FontWeight.w600,
+            //                     fontSize: 17.0),
+            //               ),
+            //               flex: 1,
+            //             ),
+            //             IconButton(
+            //               iconSize: 26,
+            //               icon: Icon(
+            //                 Icons.close,
+            //                 color: Colors.grey,
+            //               ),
+            //               onPressed: () {
+            //                 Get.back();
+            //               },
+            //             ),
+            //           ],
+            //         ),
+            //         flex: 1,
+            //       ),
+            //       Container(
+            //         width: double.infinity,
+            //         height: 0.5,
+            //         color: Colors.white,
+            //         margin: EdgeInsets.fromLTRB(15, 2, 15, 4),
+            //       )
+            //     ],
+            //   ),
+            // ),
           ),
           body: Container(
             color: Colors.transparent,
@@ -307,6 +315,11 @@ class _FormOneScreenState extends State<FormOneScreen>
     );
   }
 
+  void _backPressFunction() {
+    print("_sendOtpFunction clicked");
+    Get.back();
+  }
+
   void _nextBtnClickFunction() {
     print("_clearBtnClickFunction clicked");
     if (_formKey.currentState.validate()) {
@@ -323,7 +336,7 @@ class _FormOneScreenState extends State<FormOneScreen>
         if (LoginModel().startFundraiserMap != null) {
           if (LoginModel().startFundraiserMap.containsKey("campaignSelected")) {
             CampaignItem campaignItem =
-                LoginModel().startFundraiserMap["campaignSelected"];
+            LoginModel().startFundraiserMap["campaignSelected"];
             if (campaignItem.isHealthCase == 1) {
               Get.to(() => FormThreeScreen());
             } else {
@@ -362,7 +375,7 @@ class _FormOneScreenState extends State<FormOneScreen>
             decoration: BoxDecoration(
                 color: Color(colorCoderGreyBg),
                 border:
-                    Border.all(color: Color(colorCoderBorderWhite), width: 1),
+                Border.all(color: Color(colorCoderBorderWhite), width: 1),
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10),
@@ -429,9 +442,9 @@ class _FormOneScreenState extends State<FormOneScreen>
           if (LoginModel().itemDetailResponseInEditMode != null) {
             for (var data in LoginModel().relationsList) {
               if (LoginModel()
-                      .itemDetailResponseInEditMode
-                      .fundraiserDetails
-                      .relationMasterId ==
+                  .itemDetailResponseInEditMode
+                  .fundraiserDetails
+                  .relationMasterId ==
                   data.id) {
                 data.isSelected = true;
               } else {
@@ -469,7 +482,7 @@ class _FormOneScreenState extends State<FormOneScreen>
               .phoneNumber;
 
           _countryCode =
-              "+${LoginModel().itemDetailResponseInEditMode.fundraiserDetails.countryCode}";
+          "+${LoginModel().itemDetailResponseInEditMode.fundraiserDetails.countryCode}";
         }
       }
     }
