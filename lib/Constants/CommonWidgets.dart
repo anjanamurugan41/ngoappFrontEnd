@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Screens/Dashboard/Home.dart';
+import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ngo_app/Screens/Lend/PaymentScreen.dart';
 import 'package:ngo_app/Screens/MakeDonation/AdditionalInfoScreen.dart';
@@ -438,7 +439,7 @@ class CommonWidgets {
                             Get.back();
                             paymentInfo.form80G = null;
                             Get.to(
-                                () => PaymentScreen(
+                                () => PatymPaymentScrenn(
                                       paymentInfo: paymentInfo,
                                     ),
                                 opaque: false,
