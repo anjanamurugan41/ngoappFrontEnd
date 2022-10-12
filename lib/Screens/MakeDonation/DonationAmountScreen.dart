@@ -109,7 +109,7 @@ class _DonationAmountScreenState extends State<DonationAmountScreen> {
               },
               child: SingleChildScrollView(
                 child: Container(
-                  color: Colors.red,
+                  color: Colors.transparent,
                   padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                   child: Form(
                     key: _formKey,
