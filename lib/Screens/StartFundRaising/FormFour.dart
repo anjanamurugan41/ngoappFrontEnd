@@ -76,7 +76,6 @@ class _FormFourScreenState extends State<FormFourScreen>
                   : "Start a Fundraiser",
               buttonHandler: _backPressFunction,
             ),
-
             // Container(
             //   color: Colors.transparent,
             //   child: Column(
