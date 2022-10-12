@@ -86,6 +86,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
               text: "Start a Fundraiser",
               buttonHandler: _backPressFunction,
             ),
+
             // Container(
             //   color: Colors.transparent,
             //   child: Column(
