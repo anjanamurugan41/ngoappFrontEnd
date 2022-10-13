@@ -6,6 +6,7 @@ import 'package:ngo_app/Constants/CommonMethods.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/StringConstants.dart';
+import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Elements/CommonTextFormField.dart';
 import 'package:ngo_app/Screens/Lend/PaymentScreen.dart';
@@ -44,6 +45,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
   void dispose() {
     _panCardController.dispose();
     super.dispose();
+
   }
 
   @override
@@ -56,55 +58,59 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
           resizeToAvoidBottomInset: true,
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(65.0), // here the desired height
-            child: Container(
-              color: Colors.transparent,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: Text(
-                            "Donate",
-                            textAlign: TextAlign.left,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colors.white,
-                                height: 1.5,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17.0),
-                          ),
-                          flex: 1,
-                        ),
-                        IconButton(
-                          iconSize: 26,
-                          icon: Icon(
-                            Icons.close,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            CommonWidgets().showDonationAlertDialog();
-                          },
-                        ),
-                      ],
-                    ),
-                    flex: 1,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 0.5,
-                    color: Colors.white,
-                    margin: EdgeInsets.fromLTRB(15, 2, 15, 4),
-                  )
-                ],
-              ),
+            child: CommonAppBar(
+              text: "Donate",
+              buttonHandler:_backPressFunction,
             ),
+            // Container(
+            //   color: Colors.transparent,
+            //   child: Column(
+            //     children: [
+            //       Expanded(
+            //         child: Row(
+            //           mainAxisAlignment: MainAxisAlignment.start,
+            //           crossAxisAlignment: CrossAxisAlignment.center,
+            //           children: [
+            //             SizedBox(
+            //               width: 20,
+            //             ),
+            //             Expanded(
+            //               child: Text(
+            //                 "Donate",
+            //                 textAlign: TextAlign.left,
+            //                 maxLines: 1,
+            //                 overflow: TextOverflow.ellipsis,
+            //                 style: TextStyle(
+            //                     color: Colors.white,
+            //                     height: 1.5,
+            //                     fontWeight: FontWeight.w600,
+            //                     fontSize: 17.0),
+            //               ),
+            //               flex: 1,
+            //             ),
+            //             IconButton(
+            //               iconSize: 26,
+            //               icon: Icon(
+            //                 Icons.close,
+            //                 color: Colors.grey,
+            //               ),
+            //               onPressed: () {
+            //                 CommonWidgets().showDonationAlertDialog();
+            //               },
+            //             ),
+            //           ],
+            //         ),
+            //         flex: 1,
+            //       ),
+            //       Container(
+            //         width: double.infinity,
+            //         height: 0.5,
+            //         color: Colors.white,
+            //         margin: EdgeInsets.fromLTRB(15, 2, 15, 4),
+            //       )
+            //     ],
+            //   ),
+            // ),
           ),
           body: Container(
             color: Colors.transparent,
@@ -270,6 +276,11 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
     );
   }
 
+  void _backPressFunction() {
+    print("_sendOtpFunction clicked");
+    Get.back();
+  }
+
   void _nextBtnClickFunction() {
     print("_clearBtnClickFunction clicked");
     if (_formKey.currentState.validate()) {
@@ -278,7 +289,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
       paymentInfo.countryCode = _countryCode;
       paymentInfo.mobile = _phone.trim();
       paymentInfo.isAnonymous =
-          CommonMethods().isAuthTokenExist() ? _isAnonymous : true;
+      CommonMethods().isAuthTokenExist() ? _isAnonymous : true;
       if (_is80gFormRequired) {
         paymentInfo.form80G = Form80G(
             name: _name.trim(),
@@ -288,9 +299,9 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
       }
 
       Get.to(
-          () => PatymPaymentScrenn(
-                paymentInfo: paymentInfo,
-              ),
+              () => PatymPaymentScrenn(
+            paymentInfo: paymentInfo,
+          ),
           opaque: false,
           fullscreenDialog: true);
     } else {
