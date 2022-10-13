@@ -14,6 +14,7 @@ import 'package:ngo_app/Models/ProfileResponse.dart';
 import 'package:ngo_app/Models/UserDetails.dart';
 import 'package:ngo_app/Screens/ProfileRelated/EditProfileScreen.dart';
 import 'package:ngo_app/Screens/ProfileRelated/MyCommentsScreen.dart';
+import 'package:ngo_app/Screens/ProfileRelated/MyDocumentsScreen.dart';
 import 'package:ngo_app/Screens/ProfileRelated/MyDonationsScreen.dart';
 import 'package:ngo_app/Screens/ProfileRelated/MyFundraisersScreen.dart';
 import 'package:ngo_app/Screens/ProfileRelated/MyLoansScreen.dart';
@@ -161,7 +162,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                       color: Colors.yellowAccent,
                       fontWeight: FontWeight.w600,
                       fontSize: 12.0),
-                ),Image(
+                ), Image(
                   image: AssetImage('assets/images/ic_coin.png'),
                   height: 20,
                   width: 20,
@@ -258,7 +259,8 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                 ),
                 Expanded(
                   child: Text(
-                    "Dob: ${CommonMethods().changeDateFormat(userDetails.dateOfBirth)}",
+                    "Dob: ${CommonMethods().changeDateFormat(
+                        userDetails.dateOfBirth)}",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -332,19 +334,20 @@ class _ProfileFragmentState extends State<ProfileFragment> {
               fit: BoxFit.fill,
               imageUrl: getImage(baseUrl, userDetails),
               placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => TextDrawableWidget(
-                "${userDetails.name}",
-                ColorGenerator.materialColors,
-                (bool selected) {
-                  // on tap callback
-                  print("on tap callback");
-                },
-                false,
-                130.0,
-                130.0,
-                BoxShape.circle,
-                TextStyle(color: Colors.white, fontSize: 40.0),
-              ),
+              errorWidget: (context, url, error) =>
+                  TextDrawableWidget(
+                    "${userDetails.name}",
+                    ColorGenerator.materialColors,
+                        (bool selected) {
+                      // on tap callback
+                      print("on tap callback");
+                    },
+                    false,
+                    130.0,
+                    130.0,
+                    BoxShape.circle,
+                    TextStyle(color: Colors.white, fontSize: 40.0),
+                  ),
             ),
           ),
         ),
@@ -388,8 +391,10 @@ class _ProfileFragmentState extends State<ProfileFragment> {
             ProfileOptionsType.MyFundraiser),
         ProfileOption(_profileOptionSelected, " My Comments ",
             "assets/images/ic_my_comment.png", ProfileOptionsType.MyComments),
-        ProfileOption(_profileOptionSelected, "   My Loans   ",
+        ProfileOption(_profileOptionSelected, "  My Loans   ",
             "assets/images/ic_my_loans.png", ProfileOptionsType.MyLoans),
+        ProfileOption(_profileOptionSelected, " My Documents ",
+            "assets/images/ic_my_documents.png", ProfileOptionsType.MyDocuments),
       ],
     );
   }
@@ -404,6 +409,9 @@ class _ProfileFragmentState extends State<ProfileFragment> {
       Get.to(() => MyCommentsScreen());
     } else if (optionSelected == ProfileOptionsType.MyLoans) {
       Get.to(() => MyLoansScreen());
+    }
+    else if (optionSelected == ProfileOptionsType.MyDocuments) {
+      Get.to(() => MyDocumentsScreen());
     }
   }
 }

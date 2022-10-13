@@ -10,6 +10,7 @@ import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Elements/CommonTextFormField.dart';
 import 'package:ngo_app/Screens/Lend/PaymentScreen.dart';
+import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
 
 class AddDonorInfoScreen extends StatefulWidget {
   final PaymentInfo paymentInfo;
@@ -298,7 +299,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
       }
 
       Get.to(
-              () => PaymentScreen(
+              () => PatymPaymentScrenn(
             paymentInfo: paymentInfo,
           ),
           opaque: false,
