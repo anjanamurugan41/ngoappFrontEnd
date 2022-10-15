@@ -1,27 +1,27 @@
-import 'dart:convert';
-
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
-import 'package:ngo_app/Blocs/CommonBloc.dart';
-import 'package:ngo_app/Blocs/MyDonationsBloc.dart';
 import 'package:ngo_app/Constants/CommonMethods.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/EnumValues.dart';
 import 'package:ngo_app/Constants/StringConstants.dart';
 import 'package:ngo_app/CustomLibraries/CustomLoader/RoundedLoader.dart';
+import 'package:ngo_app/CustomLibraries/ImagePickerAndCropper/image_picker_handler.dart';
+import 'package:ngo_app/CustomLibraries/TextDrawable/TextDrawableWidget.dart';
+import 'package:ngo_app/CustomLibraries/TextDrawable/color_generator.dart';
 import 'package:ngo_app/Elements/CommonApiErrorWidget.dart';
 import 'package:ngo_app/Elements/CommonApiLoader.dart';
-import 'package:ngo_app/Elements/CommonApiResultsEmptyWidget.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
+import 'package:ngo_app/Elements/CommonButton.dart';
+import 'package:ngo_app/Elements/CommonTextFormField.dart';
 import 'package:ngo_app/Elements/EachListItemWidget.dart';
 import 'package:ngo_app/Elements/PainationLoader.dart';
 import 'package:ngo_app/Interfaces/LoadMoreListener.dart';
 import 'package:ngo_app/Interfaces/RefreshPageListener.dart';
-import 'package:ngo_app/Models/CommonResponse.dart';
-import 'package:ngo_app/Models/MyDonationsResponse.dart';
 import 'package:ngo_app/Screens/Dashboard/Home.dart';
 import 'package:ngo_app/Screens/Dashboard/ViewAllScreen.dart';
 import 'package:ngo_app/Screens/DetailPages/ItemDetailScreen.dart';
@@ -34,47 +34,35 @@ class MyDocumentsScreen extends StatefulWidget {
 }
 
 class _MyDocumentsScreenState extends State<MyDocumentsScreen>
-    with LoadMoreListener, RefreshPageListener {
+    with LoadMoreListener, RefreshPageListener,  TickerProviderStateMixin, ImagePickerListener  {
   bool isLoadingMore = false;
-  ScrollController _itemsScrollController;
-  MyDonationsBloc _myDonationsBloc;
-  CommonBloc _commonBloc;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController _documentName = new TextEditingController();
+
+  String _imageUrl = "";
+  ImagePickerHandler imagePicker;
+  AnimationController _controller;
   var subscriptionId;
 
   @override
+  File _image;
   void initState() {
-    LoginModel().relatedItemsList.clear();
-    super.initState();
-    CommonMethods().setRefreshFilterPageListener(this);
-    _itemsScrollController = ScrollController();
-    _itemsScrollController.addListener(_scrollListener);
-    _myDonationsBloc = new MyDonationsBloc(this);
-    _myDonationsBloc.getItems(false);
-    _commonBloc = new CommonBloc();
+      super.initState();
+      _controller = new AnimationController(
+        duration: const Duration(milliseconds: 500),
+
+        vsync: this,
+      );
+      imagePicker = new ImagePickerHandler(this,_controller);
+      imagePicker.init();
+      // initFields();
   }
 
-  void _scrollListener() {
-    if (_itemsScrollController.offset >=
-        _itemsScrollController.position.maxScrollExtent &&
-        !_itemsScrollController.position.outOfRange) {
-      print("reach the bottom");
-      if (_myDonationsBloc.hasNextPage) {
-        Future.delayed(const Duration(milliseconds: 1000), () {
-          _myDonationsBloc.getItems(true);
-        });
-      }
-    }
-    if (_itemsScrollController.offset <=
-        _itemsScrollController.position.minScrollExtent &&
-        !_itemsScrollController.position.outOfRange) {
-      print("reach the top");
-    }
-  }
 
   @override
   void dispose() {
-    _itemsScrollController.dispose();
-    _myDonationsBloc.dispose();
+    _controller.dispose();
+    _documentName.dispose();
     super.dispose();
   }
 
@@ -93,59 +81,26 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
               buttonHandler: _backPressFunction,
             ),
           ),
-          body: RefreshIndicator(
-            color: Colors.white,
-            backgroundColor: Colors.green,
-            onRefresh: () {
-              return _myDonationsBloc.getItems(false);
-            },
-            child: Container(
-                color: Colors.transparent,
-                height: double.infinity,
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
+          body: Container(
+              color: Colors.transparent,
+              height: double.infinity,
+              width: double.infinity,
+              padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Expanded(
-                      child: StreamBuilder<ApiResponse<MyDonationsResponse>>(
-                          stream: _myDonationsBloc.itemsStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              switch (snapshot.data.status) {
-                                case Status.LOADING:
-                                  return CommonApiLoader();
-                                  break;
-                                case Status.COMPLETED:
-                                  MyDonationsResponse response =
-                                      snapshot.data.data;
-                                  return _buildUserWidget(response.baseUrl,
-                                      _myDonationsBloc.itemsList);
-                                  break;
-                                case Status.ERROR:
-                                  return CommonApiErrorWidget(
-                                      snapshot.data.message,
-                                      _errorWidgetFunction);
-                                  break;
-                              }
-                            }
-                            return Container(
-                              child: Center(
-                                child: Text(""),
-                              ),
-                            );
-                          }),
-                      flex: 1,
-                    ),
+                  _buildUserWidget(),
+                    _uploadDocumentWidget(),
                     Visibility(
                       child: PaginationLoader(),
                       visible: isLoadingMore ? true : false,
                     ),
                   ],
-                )),
-          ),
+                ),
+              )),
           floatingActionButton: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: CommonWidgets().showHelpDesk(),
@@ -156,41 +111,12 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   }
 
   void _errorWidgetFunction() {
-    if (_myDonationsBloc != null) _myDonationsBloc.getItems(false);
+    // if (_commentsBloc != null) _commentsBloc.getAllComments(false, null);
+  Container(
+    child: Text("Hai"),
+  );
   }
 
-  _buildDonationsList(String imageBase, List<DonatedInfo> itemsList) {
-    return Container(
-      alignment: FractionalOffset.center,
-      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      margin: EdgeInsets.fromLTRB(10, 15, 10, 10),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 3,
-              blurRadius: 4,
-              offset: Offset(0, 2), // changes position of shadow
-            ),
-          ]),
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: itemsList.length,
-        itemBuilder: (context, index) {
-          return _buildItem(imageBase, itemsList[index]);
-        },
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-      ),
-    );
-  }
 
   void _backPressFunction() {
     print("_sendOtpFunction clicked");
@@ -391,14 +317,23 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     if (mounted && data != null) {
       if (data.containsKey("isFundraiserWithdrawn")) {
         if (data["isFundraiserWithdrawn"]) {
-          if (_myDonationsBloc != null) {
-            _myDonationsBloc.getItems(false);
-          }
+          // if (_myDonationsBloc != null) {
+          //   _myDonationsBloc.getItems(false);
+          // }
         }
       }
     }
   }
-
+  @override
+  userImage(File _image) {
+    if (_image != null) {
+      setState(() {
+        this._image = _image;
+      });
+    } else {
+      Fluttertoast.showToast(msg: "Unable to set image");
+    }
+  }
   @override
   void refreshPage() {
     if (mounted) {
@@ -408,10 +343,320 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       });
     }
   }
+  Widget _uploadDocumentWidget() {
+    var _blankFocusNode = new FocusNode();
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(_blankFocusNode);
+      },
+      child: Container(
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * .01),
+              Center(
+                child: Text(
+                  "Upload Documents",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+              ),
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * .03),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                child: Text(
+                  "Document Name",
+                  style: TextStyle(color: Color(colorCodeBlack), fontWeight: FontWeight.w600),
+                ),
+              ),
+              Padding(
+                child: CommonTextFormField(
+                    hintText: "Document Name",
+                    maxLinesReceived: 1,
+                    maxLengthReceived: 150,
+                    controller: _documentName,
+                    textColorReceived: Color(colorCodeBlack),
+                    fillColorReceived: Colors.black12,
+                    hintColorReceived: Colors.black87,
+                    borderColorReceived: Color(colorCoderBorderWhite),
+                    onChanged: (val) => _documentName = val,
+                    validator: CommonMethods().nameValidator),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+              ),
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * .01),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                child: Text(
+                  "Document Image",
+                  style: TextStyle(color: Color(colorCodeBlack), fontWeight: FontWeight.w600),
+                ),
+              ),
+              _buildImageSection(),
+              Container(
+                height: 50.0,
+                width: double.infinity,
+                margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                child: CommonButton(
+                    buttonText: "Upload",
+                    bgColorReceived: Color(colorCoderRedBg),
+                    borderColorReceived: Color(colorCoderRedBg),
+                    textColorReceived: Color(colorCodeWhite),
+                    buttonHandler:_nextBtnClickFunction),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  void _nextBtnClickFunction() {
+    print("_clearBtnClickFunction clicked");
+      if (_formKey.currentState.validate()) {
+        FocusScope.of(context).requestFocus(FocusNode());
 
-  _buildUserWidget(String imageBase, List<DonatedInfo> itemsList) {
-    if (itemsList != null) {
-      if (itemsList.length > 0) {
+        // if (_image != null) {
+        //   // LoginModel().userDetails["pancard_image"] = _image;
+        // }
+        // // LoginModel().startFundraiserMap["patient_name"] = _documentName.text.trim();
+        Fluttertoast.showToast(msg: "SuccessFully Uploaded");
+        // Get.to(() => _image);
+      } else {
+        Fluttertoast.showToast(msg: StringConstants.formValidationMsg);
+        return;
+    }
+
+  }
+  _showdocumentsectin(){
+    return  StreamBuilder(
+        builder: (context, snapshot) {
+          // stream: _profileBlocUser.userRecordStream,
+          if (snapshot.hasData) {
+            switch (snapshot.data.status) {
+              case Status.LOADING:
+                return SizedBox(
+                  child: CommonApiLoader(),
+                );
+              case Status.COMPLETED:
+                return ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: 2,
+                    itemBuilder:
+                        (BuildContext context, int index) {
+                      return Card(
+                        color: Colors.grey[200],
+                        margin: EdgeInsets.only(top: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                               _documentName.text,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Get.to(() =>
+                                    Image(image: FileImage(File(_image.path)),),);
+                                    // Image.asset(
+                                    //   "$_image",fit: BoxFit.cover,
+                                    //   ),),
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.fitWidth,
+                                    imageUrl: _imageUrl,
+                                    placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) => Container(
+                                        margin: EdgeInsets.all(5),
+                                        child: Image(
+                                          image: AssetImage('assets/images/ic_404_error.png'),
+                                        )),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    });
+              case Status.ERROR:
+                return CommonApiErrorWidget(
+                    snapshot.data.message,
+                    _errorWidgetFunction);
+            }
+          }
+          return SizedBox(
+            height: 30,
+            child: CommonApiLoader(),
+          );
+        });
+
+  }
+
+  _buildImageSection() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+      alignment: FractionalOffset.center,
+      width: double.infinity,
+      height: 200,
+      color: Colors.transparent,
+      child: Container(
+        height: 180.0,
+        width: double.infinity,
+        child: Stack(children: <Widget>[
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: new BoxDecoration(
+              color: Colors.black12,
+              // color: Colors.transparent,
+              border: Border.all(
+                color:  Color(colorCoderBorderWhite),
+              ),
+              borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
+              child: SizedBox.expand(
+                child: showImage(),
+              ),
+            ),
+          ),
+          Positioned(
+            right: 0.0,
+            bottom: 0.0,
+            child: Container(
+              child: InkWell(
+                child: Image.asset(
+                  ('assets/images/ic_camera.png'),
+                  height: 45,
+                  width: 45,
+                ),
+                onTap: () {
+                  imagePicker.showDialog(context);
+                },
+              ),
+            ),
+          )
+        ]),
+      ),
+    );
+  }
+
+  Widget showImage() {
+    if (LoginModel().isFundraiserEditMode) {
+      return Center(
+        child: _image == null
+            ? Container(
+          color: Colors.black12,
+          child: CachedNetworkImage(
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+            imageUrl: _imageUrl,
+            placeholder: (context, url) => Center(
+              child: RoundedLoader(),
+            ),
+            errorWidget: (context, url, error) => Container(
+              child: Image.asset(
+                ('assets/images/no_image.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          padding: EdgeInsets.all(0),
+        )
+            : Container(
+          height: 180.0,
+          width: double.infinity,
+          child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
+              (BuildContext context, Object exception,
+              StackTrace stackTrace) {
+            return Container(
+              child: Image.asset(
+                ('assets/images/no_image.png'),
+                fit: BoxFit.fill,
+              ),
+            );
+          }),
+          decoration: BoxDecoration(
+            color: Colors.cyan[100],
+            borderRadius:
+            new BorderRadius.all(const Radius.circular(80.0)),
+            image: new DecorationImage(
+                image: new AssetImage('assets/images/no_image.png'),
+                fit: BoxFit.cover),
+          ),
+        ),
+      );
+    } else {
+      return Center(
+        child: _image == null
+            ? Container(
+          color: Colors.black12,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Image(
+                  image: AssetImage('assets/images/no_image.png'),
+                  height: double.infinity,
+                  width: double.infinity,
+                ),
+                flex: 1,
+              ),
+            ],
+          ),
+          padding: EdgeInsets.all(5),
+        )
+            : Container(
+          height: 190.0,
+          width: double.infinity,
+          child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
+              (BuildContext context, Object exception,
+              StackTrace stackTrace) {
+            return Container(
+              child: Image.asset(
+                ('assets/images/no_image.png'),
+                fit: BoxFit.fill,
+              ),
+            );
+          }),
+          decoration: BoxDecoration(
+            color: Colors.cyan[100],
+            borderRadius:
+            new BorderRadius.all(const Radius.circular(80.0)),
+            image: new DecorationImage(
+                image: new AssetImage('assets/images/no_image.png'),
+                fit: BoxFit.cover),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+
+  _buildUserWidget() {
         return SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
@@ -420,7 +665,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               _buildMessageSection(),
-              _buildDonationsList(imageBase, itemsList),
               Visibility(
                 child: _buildRecommendedSection(),
                 visible: isLoadingMore ? false : true,
@@ -433,183 +677,8 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
               ),
             ],
           ),
-          controller: _itemsScrollController,
-        );
-      } else {
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            _buildMessageSection(),
-            Expanded(
-              child: CommonApiResultsEmptyWidget("Results Empty"),
-              flex: 1,
-            ),
-          ],
         );
       }
-    } else {
-      return CommonApiErrorWidget("No results found", _errorWidgetFunction);
+
     }
-  }
 
-  _buildItem(String imageBase, DonatedInfo donatedInfo) {
-    return Container(
-      alignment: FractionalOffset.center,
-      padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
-      child: InkWell(
-        onTap: () {
-          if (donatedInfo.fundraiserId != null) {
-            Get.to(() => ItemDetailScreen(donatedInfo.fundraiserId));
-          }
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-                borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
-                child: getImageContainer(imageBase, donatedInfo)),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(15, 0, 5, 0),
-                    alignment: FractionalOffset.centerLeft,
-                    child: Text(
-                      "${donatedInfo.title}",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Color(colorCoderItemTitle),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13.0),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(15, 0, 5, 0),
-                    alignment: FractionalOffset.centerLeft,
-                    child: Text(
-                      "₹ ${CommonMethods().convertAmount(donatedInfo.amount)}",
-                      style: TextStyle(
-                          color: Color(colorCoderItemSubTitle),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 13.0),
-                    ),
-                  ),
-                  Visibility(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            primary: Colors.red,
-                            textStyle: TextStyle(
-                                color: Colors.red,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          onPressed: () {
-                            subscriptionId = donatedInfo.subscribeId;
-                            CommonWidgets().showCommonDialog(
-                                "Are you sure, you want to remove the subscription?",
-                                AssetImage(
-                                    'assets/images/ic_notification_message.png'),
-                                _unScubscribe,
-                                false,
-                                true);
-                          },
-                          child: Text('Remove Subscription'),
-                        ),
-                        padding: EdgeInsets.fromLTRB(2, 0, 2, 0),
-                      ),
-                    ),
-                    visible: donatedInfo.subscribed ?? false,
-                  )
-                ],
-              ),
-              flex: 1,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String getImage(String baseUrl, String imgUrl) {
-    String img = "";
-    if (baseUrl != null) {
-      if (baseUrl != "") {
-        if (imgUrl != null) {
-          if (imgUrl != "") {
-            img = baseUrl + imgUrl;
-          }
-        }
-      }
-    }
-    return img;
-  }
-
-  _unScubscribe() {
-    Get.back();
-    var bodyParams = {};
-    bodyParams["id"] = "$subscriptionId";
-
-    CommonWidgets().showNetworkProcessingDialog();
-    _commonBloc.unSubscribe(json.encode(bodyParams)).then((value) {
-      Get.back();
-      CommonResponse commonResponse = value;
-      if (commonResponse.success) {
-        subscriptionId = '';
-        Fluttertoast.showToast(msg: commonResponse.message);
-        _myDonationsBloc.getItems(false);
-      } else {
-        Fluttertoast.showToast(
-            msg: commonResponse.message ?? StringConstants.apiFailureMsg);
-      }
-    }).catchError((err) {
-      CommonWidgets().showNetworkErrorDialog(err?.toString());
-    });
-  }
-
-  getImageContainer(String imageBase, DonatedInfo donatedInfo) {
-    if (donatedInfo.imageUrl != null) {
-      return Container(
-        width: 80,
-        height: 80,
-        child: CachedNetworkImage(
-          width: double.infinity,
-          height: double.infinity,
-          fit: BoxFit.cover,
-          imageUrl: getImage(imageBase, donatedInfo.imageUrl),
-          placeholder: (context, url) => Center(
-            child: RoundedLoader(),
-          ),
-          errorWidget: (context, url, error) => Container(
-            color: Colors.black12,
-            child: Image(
-              image: AssetImage('assets/images/no_image.png'),
-              height: double.infinity,
-              width: double.infinity,
-            ),
-            padding: EdgeInsets.all(5),
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        width: 80,
-        height: 80,
-        color: Colors.white,
-        child: Image.asset('assets/images/ic_logo.png', width: 80, height: 80),
-      );
-    }
-  }
-}
