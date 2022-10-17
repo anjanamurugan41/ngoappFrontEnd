@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
-
 import 'AddDonorInfoScreen.dart';
 
 class DonationAmountScreen extends StatefulWidget {

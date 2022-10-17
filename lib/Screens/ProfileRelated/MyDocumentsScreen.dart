@@ -424,7 +424,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
         // }
         // // LoginModel().startFundraiserMap["patient_name"] = _documentName.text.trim();
         Fluttertoast.showToast(msg: "SuccessFully Uploaded");
-        // Get.to(() => _image);
+        // Get.to(() => );
       } else {
         Fluttertoast.showToast(msg: StringConstants.formValidationMsg);
         return;
