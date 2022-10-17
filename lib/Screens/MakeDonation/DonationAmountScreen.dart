@@ -3,18 +3,24 @@ import 'package:get/get.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
+import 'package:ngo_app/Screens/Lend/PaymentScreen.dart';
+import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
 
 import 'AddDonorInfoScreen.dart';
 
 class DonationAmountScreen extends StatefulWidget {
+  const DonationAmountScreen({Key key, this.paymentInfo}) : super(key: key);
+
   @override
   _DonationAmountScreenState createState() => _DonationAmountScreenState();
+  final PaymentInfo paymentInfo;
 }
 
 class _DonationAmountScreenState extends State<DonationAmountScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _amount;
   bool _autoValidate = false;
+  PaymentInfo paymentInfo;
   List<String> amountsInfo = [
     "₹ 1000",
     "₹ 2000",
@@ -164,7 +170,7 @@ class _DonationAmountScreenState extends State<DonationAmountScreen> {
 
   void _nextBtnClickFunction() {
     print("_clearBtnClickFunction clicked");
-    Get.to(() => AddDonorInfoScreen());
+    Get.to(() => PatymPaymentScrenn(paymentInfo: paymentInfo,));
   }
 
   Future<bool> onWillPop() {

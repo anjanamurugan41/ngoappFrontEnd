@@ -347,6 +347,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
           ],
         ),
         SizedBox(height: MediaQuery.of(context).size.height * .01),
+
       ],
     );
   }

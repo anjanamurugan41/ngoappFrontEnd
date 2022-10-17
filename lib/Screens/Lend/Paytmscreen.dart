@@ -62,7 +62,7 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
           paymentInfo.amount
       );
       Get.back();
-      print("start Transaction------------------");
+     print("StartTransaction->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
       await _startTransaction(
         response.mid,
         response.order_id,
