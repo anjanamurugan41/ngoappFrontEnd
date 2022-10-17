@@ -81,7 +81,7 @@ class _DonationAmountScreenState extends State<DonationAmountScreen> {
                           ),
                           onPressed: () {
                             CommonWidgets().showDonationAlertDialog();
-                          },
+                          }
                         ),
                       ],
                     ),
