@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
-import 'package:ngo_app/Screens/Lend/PaymentScreen.dart';
-import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
 
 import 'AddDonorInfoScreen.dart';
 
@@ -88,7 +86,7 @@ class _DonationAmountScreenState extends State<DonationAmountScreen> {
                           ),
                           onPressed: () {
                             CommonWidgets().showDonationAlertDialog();
-                          },
+                          }
                         ),
                       ],
                     ),

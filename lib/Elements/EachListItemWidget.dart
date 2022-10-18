@@ -38,7 +38,7 @@ class _EachListItemWidgetState extends State<EachListItemWidget> {
         width: widget.scrollType == ScrollType.Horizontal
             ? MediaQuery.of(context).size.width > 600
                 ? MediaQuery.of(context).size.width * .65
-                : MediaQuery.of(context).size.width * .85
+                : MediaQuery.of(context).size.width * .92
             : double.infinity,
         alignment: FractionalOffset.center,
         padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
