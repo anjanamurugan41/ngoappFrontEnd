@@ -40,7 +40,7 @@ class BookingsBlocUser {
 
   Future<TestPaymentModel> bookAppointment(
       String name,
-      int amount,
+       int amount,
       String email,
       String phone,
 

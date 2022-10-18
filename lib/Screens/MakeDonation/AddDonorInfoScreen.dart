@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,14 +11,20 @@ import 'package:ngo_app/Constants/StringConstants.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Elements/CommonTextFormField.dart';
+import 'package:ngo_app/Models/UserDetails.dart';
 import 'package:ngo_app/Screens/Lend/PaymentScreen.dart';
 import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
+import 'package:ngo_app/Utilities/LoginModel.dart';
+import 'package:ngo_app/Utilities/PreferenceUtils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddDonorInfoScreen extends StatefulWidget {
-  final PaymentInfo paymentInfo;
+
+
 
   const AddDonorInfoScreen({Key key, @required this.paymentInfo})
       : super(key: key);
+  final PaymentInfo paymentInfo;
 
   @override
   _AddDonorInfoScreenState createState() => _AddDonorInfoScreenState();
@@ -34,11 +42,16 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
   TextEditingController _panCardController = new TextEditingController();
 
   PaymentInfo paymentInfo;
-
+  String _amount;
+  String authToken;
+  PaymentInfo paymentinfo;
+  UserDetails userDetails;
   @override
   void initState() {
     super.initState();
-    paymentInfo = widget.paymentInfo;
+  paymentInfo = widget.paymentInfo;
+
+  print("paymentinfo->${paymentInfo}");
   }
 
   @override
@@ -62,55 +75,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
               text: "Donate",
               buttonHandler:_backPressFunction,
             ),
-            // Container(
-            //   color: Colors.transparent,
-            //   child: Column(
-            //     children: [
-            //       Expanded(
-            //         child: Row(
-            //           mainAxisAlignment: MainAxisAlignment.start,
-            //           crossAxisAlignment: CrossAxisAlignment.center,
-            //           children: [
-            //             SizedBox(
-            //               width: 20,
-            //             ),
-            //             Expanded(
-            //               child: Text(
-            //                 "Donate",
-            //                 textAlign: TextAlign.left,
-            //                 maxLines: 1,
-            //                 overflow: TextOverflow.ellipsis,
-            //                 style: TextStyle(
-            //                     color: Colors.white,
-            //                     height: 1.5,
-            //                     fontWeight: FontWeight.w600,
-            //                     fontSize: 17.0),
-            //               ),
-            //               flex: 1,
-            //             ),
-            //             IconButton(
-            //               iconSize: 26,
-            //               icon: Icon(
-            //                 Icons.close,
-            //                 color: Colors.grey,
-            //               ),
-            //               onPressed: () {
-            //                 CommonWidgets().showDonationAlertDialog();
-            //               },
-            //             ),
-            //           ],
-            //         ),
-            //         flex: 1,
-            //       ),
-            //       Container(
-            //         width: double.infinity,
-            //         height: 0.5,
-            //         color: Colors.white,
-            //         margin: EdgeInsets.fromLTRB(15, 2, 15, 4),
-            //       )
-            //     ],
-            //   ),
-            // ),
+
           ),
           body: Container(
             color: Colors.transparent,
@@ -282,24 +247,25 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
   }
 
   void _nextBtnClickFunction() {
-    print("_clearBtnClickFunction clicked");
+
+    print("nextButtonclick");
+
     if (_formKey.currentState.validate()) {
-      paymentInfo.name = _name.trim();
-      paymentInfo.email = _email.trim();
-      paymentInfo.countryCode = _countryCode;
-      paymentInfo.mobile = _phone.trim();
-      paymentInfo.isAnonymous =
-      CommonMethods().isAuthTokenExist() ? _isAnonymous : true;
+      // paymentInfo.name = _name.trim();
+      // paymentInfo.email = _email.trim();
+      // paymentInfo.countryCode = _countryCode;
+      // paymentInfo.mobile = _phone.trim();
+      // paymentInfo.isAnonymous =
+      // CommonMethods().isAuthTokenExist() ? _isAnonymous : true;
       if (_is80gFormRequired) {
-        paymentInfo.form80G = Form80G(
+            paymentInfo.form80G = Form80G(
             name: _name.trim(),
             pan: _panCard.trim(),
             countryCode: _countryCode,
             mobile: _phone.trim());
       }
-print("name->>>>>>${ paymentInfo.name}");
-      Get.to(
-              () => PatymPaymentScrenn(name: paymentInfo.name,email: paymentInfo.email,phonenumber: paymentInfo.mobile,amount: paymentInfo.amount,
+   Get.to(
+              () => PatymPaymentScrenn(name:_name,email: _email,phonenumber:_phone,amount: 1,
 
           ),
           opaque: false,
@@ -422,14 +388,72 @@ print("name->>>>>>${ paymentInfo.name}");
   }
 
   void _check80gFormRequirement() {
-    if (_is80gFormRequired == false) {
+
+
+    if (_is80gFormRequired == false)
+
+    {
+
       setState(() {
+
         _is80gFormRequired = true;
+
+
       });
-    } else if (_is80gFormRequired == true) {
+
+    }
+    else if (_is80gFormRequired == true) {
       setState(() {
         _is80gFormRequired = false;
       });
     }
   }
+
+
+
+
+  // void getSharedPreferences() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   try {
+  //     authToken = prefs.getString(PreferenceUtils.prefAuthToken) ?? "";
+  //     print(authToken);
+  //     if (authToken != "") {
+  //       var data = prefs.getString(PreferenceUtils.prefUserDetails) ?? "";
+  //       if (data != "") {
+  //         userDetails = UserDetails.fromJson(json.decode(data));
+  //         if (userDetails != null) {
+  //           LoginModel().authToken = authToken;
+  //           LoginModel().userDetails = userDetails;
+  //           print("*************************");
+  //           print(userDetails.id);
+  //           print(userDetails.name);
+  //           print(userDetails.email);
+  //           print(userDetails.countryCode);
+  //           print(userDetails.phoneNumber);
+  //           print(userDetails.imageUrl);
+  //           print("*************************");
+  //          // OneSignalNotifications().handleSendTags();
+  //         }
+  //         else {
+  //           print("*******");
+  //           print("userDetails is null");
+  //           print("*******");
+  //         }
+  //       } else {
+  //         print("*******");
+  //         print("data is empty");
+  //         print("*******");
+  //       }
+  //     } else {
+  //       print("*******");
+  //       print("auth is empty");
+  //
+  //       _nextBtnClickFunction();
+  //       print("*******");
+  //     }
+  //    // startTime();
+  //   } catch (Exception) {
+  //     Text("");
+  //   }
+  // }
 }
