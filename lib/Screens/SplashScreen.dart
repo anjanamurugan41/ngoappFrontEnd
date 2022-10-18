@@ -84,7 +84,8 @@ class _SplashScreenState extends State<SplashScreen>
             print(userDetails.imageUrl);
             print("*************************");
             OneSignalNotifications().handleSendTags();
-          } else {
+          }
+          else {
             print("*******");
             print("userDetails is null");
             print("*******");
