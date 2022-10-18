@@ -12,6 +12,7 @@ import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Elements/CommonTextFormField.dart';
 import 'package:ngo_app/Models/CommonResponse.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsScreen extends StatefulWidget {
   @override
@@ -20,6 +21,8 @@ class ContactUsScreen extends StatefulWidget {
 
 class _ContactUsScreenState extends State<ContactUsScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String number="8078126095";
+  String mail="info@crowdworksindia.org";
   String _comment;
   String _name;
   String _email;
@@ -86,6 +89,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * .02),
                         _buildCompanyEmailDetails(),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * .02),
+                        _buildCompanyPhoneDetails(),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * .02),
                         _buildCompanyAddressDetails(),
@@ -215,19 +221,83 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               children: [
                 Image(
                   image: AssetImage("assets/images/ic_red_email.png"),
-                  height: 40.0,
+                  height: 30.0,
                   width: 40.0,
                 ),
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     alignment: FractionalOffset.centerLeft,
-                    child: Text(
-                      "company@gmail.com",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13.0),
+                    child: InkWell(
+                      onTap: ()=> launch("mailto:$mail"),
+                      child: Text(mail,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13.0),
+                      ),
+                    ),
+                  ),
+                  flex: 1,
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _buildCompanyPhoneDetails() {
+    return Container(
+      alignment: FractionalOffset.center,
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+      decoration: BoxDecoration(
+          color: Color(colorCodeGreyPageBg),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 3,
+              blurRadius: 4,
+              offset: Offset(0, 2), // changes position of shadow
+            ),
+          ]),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image(
+                  image: AssetImage("assets/images/ic_red_phone.png"),
+                  height: 30.0,
+                  width: 40.0,
+                ),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    alignment: FractionalOffset.centerLeft,
+                    child: InkWell(
+                      onTap: ()=>launch("tel:+91 $number"),
+                      child: Text(
+                        number,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13.0),
+                      ),
                     ),
                   ),
                   flex: 1,
@@ -274,7 +344,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               children: [
                 Image(
                   image: AssetImage("assets/images/ic_red_location.png"),
-                  height: 40.0,
+                  height: 30.0,
                   width: 40.0,
                 ),
                 Expanded(
@@ -282,7 +352,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     alignment: FractionalOffset.centerLeft,
                     child: Text(
-                      "330 Bay street, 6th floor, Red cross, United kingdom",
+                      "CROWD WORKS INDIA FOUNDATION,ALAMPARAMBIL BUILDING, 13/1013-5,2ND FLOOR, TK ROAD, THIRUVALLA,KERALA, 689101.TOLL FREE: 1800 890 1811TIME: MON - FRI (9:00 - 19:00)",
+                      // "330 Bay street, 6th floor, Red cross, United kingdom",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -321,4 +392,20 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
       CommonWidgets().showNetworkErrorDialog(err?.toString());
     });
   }
+  launchDialer(String number) async {
+    String url = 'tel:' + number;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Application unable to open dialer.';
+    }
+  }
+
 }
+
+
+// class CallsAndMessagesService {
+//   void call(String number) => launch("tel:$number");
+//   void sendSms(String number) => launch("sms:$number");
+//   void sendEmail(String email) => launch("mailto:$email");
+// }
