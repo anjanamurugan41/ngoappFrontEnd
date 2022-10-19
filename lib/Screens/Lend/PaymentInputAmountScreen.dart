@@ -229,12 +229,16 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
         CommonWidgets().show80GFormAlertDialog(context, paymentInfo);
         // Navigator.of(context).push(PageRouteBuilder(opaque: false, pageBuilder: (_, __, ___) => PaymentScreen(paymentInfo: paymentInfo,)));
       } else if (widget.paymentType == PaymentType.Donation) {
+
         // SharedPreferences prefs = await SharedPreferences.getInstance();
         // var data = prefs.getString(PreferenceUtils.prefUserDetails) ?? "";
         // userDetails = UserDetails.fromJson(json.decode(data));
         // LoginModel().userDetails = userDetails;
         // print("paymentIfo->>>>>>${userDetails.name}");
-        Get.to(() => PatymPaymentScrenn(name: userDetails.name,email: userDetails.email,phonenumber: userDetails.phoneNumber,amount:1,));
+
+
+        Get.to(() =>
+            PatymPaymentScrenn(name: userDetails.name,email: userDetails.email,phonenumber: userDetails.phoneNumber,amount:1,));
       } else {
         //neglect
       }
@@ -443,7 +447,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
       }
       else {
         print("*******");
-        Get.to(() =>AddDonorInfoScreen(paymentInfo: paymentinfo));
+        Get.to(() =>AddDonorInfoScreen());
         print("*******");
 
       }

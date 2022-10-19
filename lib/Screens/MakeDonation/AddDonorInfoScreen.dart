@@ -52,6 +52,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: WillPopScope(
+
         onWillPop: onWillPop,
         child: Scaffold(
           backgroundColor: Color(colorCodeGreyPageBg),
