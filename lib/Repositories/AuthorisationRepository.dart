@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:ngo_app/Models/CommonResponse.dart';
 import 'package:ngo_app/Models/OtpResponse.dart';
+import 'package:ngo_app/Models/PancardUploadResponse.dart';
 import 'package:ngo_app/Models/ProfileResponse.dart';
 
 import '../Models/LoginResponse.dart';
@@ -46,4 +49,21 @@ class AuthorisationRepository {
         data: formData);
     return ProfileResponse.fromJson(response.data);
   }
+
+  Future<PancardResponse> pancardupload(
+    File reportFile) async {
+    print("->>${reportFile}");
+    String fileName = reportFile.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "pancard_image": reportFile,
+      "report_file":
+      await MultipartFile.fromFile(reportFile.path, filename: fileName),
+    });
+    final response = await apiProvider
+        .getMultipartInstance()
+        .post('${RemoteConfig.pancardupload}', data: formData);
+    print("->>>>>>>>>>>${response}");
+    return PancardResponse.fromJson(response.data);
+  }
+
 }

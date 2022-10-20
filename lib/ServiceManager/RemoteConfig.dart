@@ -33,6 +33,7 @@ class RemoteConfig {
   static const getOurTeam = "master/our-team";
   static const reportIssue = "report-issue/add";
   static const cancelFundraiser = "report-issue/cancel-fundraiser";
+  static const pancardupload="user/pancardupload";
 
   // Loan & Lend related
   static const createLend = "loan/create-loan";

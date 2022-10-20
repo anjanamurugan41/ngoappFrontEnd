@@ -11,54 +11,50 @@ import '../ServiceManager/ApiResponse.dart';
 import '../Utilities/LoginModel.dart';
 import '../Utilities/PreferenceUtils.dart';
 
-class ProfileBloc {
+class PanBloc {
   AuthorisationRepository authorisationRepository;
-  StreamController _profileController;
+
   StreamController _panController;
-  StreamSink<ApiResponse<ProfileResponse>> get profileSink =>
-      _profileController.sink;
+
   StreamSink<ApiResponse<PancardResponse>> get pancardsink =>
       _panController.sink;
 
-  Stream<ApiResponse<ProfileResponse>> get profileStream =>
-      _profileController.stream;
 
   Stream<ApiResponse<PancardResponse>> get pancardStream =>
       _panController.stream;
-  ProfileBloc() {
-    _profileController = StreamController<ApiResponse<ProfileResponse>>();
+  PanBloc() {
+
     authorisationRepository = AuthorisationRepository();
     _panController = StreamController<ApiResponse<PancardResponse>>();
   }
 
 
-  getProfileInfo() async {
-    profileSink.add(ApiResponse.loading('Fetching profile'));
+  getpancardinfo(file) async {
+    pancardsink.add(ApiResponse.loading('Fetching profile'));
     try {
-      ProfileResponse profileResponse =
-          await authorisationRepository.getProfileInfo();
-      if (profileResponse.success) {
-        if (profileResponse.userDetails != null) {
-          LoginModel().userDetails = profileResponse.userDetails;
-          LoginModel().userDetails.baseUrl = profileResponse.baseUrl;
+      PancardResponse pancardResponse =
+      await authorisationRepository.pancardupload( file);
+      if (pancardResponse.success) {
+        if (pancardResponse.userDetails != null) {
+          LoginModel().userDetails.pancardimage ;
+          LoginModel().userDetails.baseUrl = pancardResponse.baseUrl;
           PreferenceUtils.setObjectToSF(
               PreferenceUtils.prefUserDetails, LoginModel().userDetails);
         }
-        profileSink.add(ApiResponse.completed(profileResponse));
+        pancardsink.add(ApiResponse.completed(pancardResponse));
       } else {
-        profileSink.add(ApiResponse.error(
-            profileResponse.message ?? "Unable to process your request"));
+        pancardsink.add(ApiResponse.error(
+            pancardResponse.message ?? "Unable to process your request"));
       }
     } catch (error) {
-      profileSink
+      pancardsink
           .add(ApiResponse.error(CommonMethods().getNetworkError(error)));
     }
   }
 
 
-
   dispose() {
-    profileSink?.close();
-    _profileController?.close();
+    pancardsink?.close();
+    _panController?.close();
   }
 }

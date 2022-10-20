@@ -53,4 +53,5 @@ class AuthorisationBloc {
       throw CommonMethods().getNetworkError(error);
     }
   }
+
 }
