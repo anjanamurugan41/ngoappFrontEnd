@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:ngo_app/Models/CommonResponse.dart';
 import 'package:ngo_app/Models/PancardUploadResponse.dart';
 import 'package:ngo_app/Models/UserDetails.dart';
 import 'package:ngo_app/Repositories/AuthorisationRepository.dart';
@@ -36,7 +37,7 @@ class PanBloc {
       await authorisationRepository.pancardupload( file);
       if (pancardResponse.success) {
         if (pancardResponse.userDetails != null) {
-          LoginModel().userDetails.pancardimage ;
+          LoginModel().userDetails.pancardimage=pancardResponse.userDetails.pancard_image;
           LoginModel().userDetails.baseUrl = pancardResponse.baseUrl;
           PreferenceUtils.setObjectToSF(
               PreferenceUtils.prefUserDetails, LoginModel().userDetails);
@@ -52,6 +53,17 @@ class PanBloc {
     }
   }
 
+  Future<PancardResponse> uploadUserRecords(
+     File reportFile) async {
+    try {
+      PancardResponse response =
+      (await authorisationRepository.pancardupload(reportFile));
+      return response;
+    } catch (e, s) {
+      Completer().completeError(e, s);
+      throw e;
+    }
+  }
 
   dispose() {
     pancardsink?.close();

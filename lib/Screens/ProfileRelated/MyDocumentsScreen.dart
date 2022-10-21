@@ -3,24 +3,18 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
-import 'package:ngo_app/Blocs/ProfileBloc.dart';
 import 'package:ngo_app/Blocs/panbloc.dart';
 import 'package:ngo_app/Constants/CommonMethods.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/EnumValues.dart';
-import 'package:ngo_app/Constants/StringConstants.dart';
 import 'package:ngo_app/CustomLibraries/CustomLoader/RoundedLoader.dart';
 import 'package:ngo_app/CustomLibraries/ImagePickerAndCropper/image_picker_handler.dart';
-import 'package:ngo_app/CustomLibraries/TextDrawable/TextDrawableWidget.dart';
-import 'package:ngo_app/CustomLibraries/TextDrawable/color_generator.dart';
 import 'package:ngo_app/Elements/CommonApiErrorWidget.dart';
 import 'package:ngo_app/Elements/CommonApiLoader.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
-import 'package:ngo_app/Elements/CommonTextFormField.dart';
 import 'package:ngo_app/Elements/EachListItemWidget.dart';
 import 'package:ngo_app/Elements/PainationLoader.dart';
 import 'package:ngo_app/Interfaces/LoadMoreListener.dart';
@@ -44,7 +38,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _documentName = new TextEditingController();
   PanBloc _panbloc;
-  ProfileBloc _profilebloc;
   String _imageUrl = "";
   ImagePickerHandler imagePicker;
   AnimationController _controller;
@@ -102,6 +95,22 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                   children: <Widget>[
                     _buildUserWidget(),
                     _uploadDocumentWidget(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Your Pan Card",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _showdocumentsectin(),
                     Visibility(
                       child: PaginationLoader(),
                       visible: isLoadingMore ? true : false,
@@ -384,7 +393,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                 print("image->${_image}");
                 if (_image != null) {
                   await _updateDocument(_image);
-                  // _image = null;
+                   // _image = null;
                   setState(() {});
                 }
                 return Fluttertoast.showToast(msg: "Select Document Image");
@@ -400,45 +409,9 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     );
   }
 
-  void _nextBtnClickFunction() {
-    print("_clearBtnClickFunction clicked");
-    if (_formKey.currentState.validate()) {
-      FocusScope.of(context).requestFocus(FocusNode());
-      if (_image != null) {
-        LoginModel().userDetails.pancardimage = _image as String;
-      }
-      Fluttertoast.showToast(msg: "SuccessFully Uploaded");
-      // Get.to(() => );
-    } else {
-      Fluttertoast.showToast(msg: StringConstants.formValidationMsg);
-      return;
-    }
-  }
-
-  Future _updateDocument( File reportFile) async {
-    try {
-      PancardResponse response =
-      await _panbloc.getpancardinfo( reportFile);
-      Get.back();
-
-      print("dx->>>>>>>>>>>>>${reportFile}");
-      if (response.success) {
-        Fluttertoast.showToast(msg: "${response.message}");
-        await _panbloc.getpancardinfo( reportFile);
-      } else {
-        Fluttertoast.showToast(msg: "${response.message}");
-      }
-    } catch (e, s) {
-      Completer().completeError(e, s);
-      Get.back();
-      Fluttertoast.showToast(msg: "Something went wrong. Please try again");
-    }
-  }
-
   _showdocumentsectin(){
     return  StreamBuilder(
         builder: (context, snapshot) {
-
           if (snapshot.hasData) {
             switch (snapshot.data.status) {
               case Status.LOADING:
@@ -460,18 +433,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Your Pan Card",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
                               InkWell(
                                 onTap: () {
                                   Get.to(() =>
@@ -510,6 +471,42 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
           );
         });
 
+  }
+
+  // void _nextBtnClickFunction() {
+  //   print("_clearBtnClickFunction clicked");
+  //   if (_formKey.currentState.validate()) {
+  //     FocusScope.of(context).requestFocus(FocusNode());
+  //     if (_image != null) {
+  //       LoginModel().userDetails.pancardimage = _image as String;
+  //     }
+  //     Fluttertoast.showToast(msg: "SuccessFully Uploaded");
+  //     // Get.to(() => );
+  //   } else {
+  //     Fluttertoast.showToast(msg: StringConstants.formValidationMsg);
+  //     return;
+  //   }
+  // }
+
+  Future _updateDocument( File reportFile) async {
+    try {
+      PancardResponse response =
+      await _panbloc.uploadUserRecords( reportFile);
+      Get.back();
+      print("response==>${response}");
+
+      if (response.success) {
+
+        Fluttertoast.showToast(msg: "${response.message}");
+        await _panbloc.uploadUserRecords( reportFile);
+
+      } else {
+        Fluttertoast.showToast(msg: "${response.message}");
+      }
+    } catch (e, s) {
+      Completer().completeError(e, s);
+      Fluttertoast.showToast(msg: "Something went wrong. Please try again");
+    }
   }
 
   _buildImageSection() {

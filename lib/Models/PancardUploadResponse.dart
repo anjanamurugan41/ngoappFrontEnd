@@ -52,12 +52,10 @@ class UserDetails {
     factory UserDetails.fromJson(Map<String, dynamic> json) {
         return UserDetails(
             country_code: json['country_code'],
-           // customer_id: json['customer_id'] != null ? Object.fromJson(json['customer_id']) : null,
             date_of_birth: json['date_of_birth'],
             email: json['email'],
             id: json['id'],
             image_url: json['image_url'],
-          //  modified_at: json['modified_at'] != null ? ModifiedAt.fromJson(json['modified_at']) : null,
             name: json['name'],
             pancard_image: json['pancard_image'],
             phone_number: json['phone_number'],
