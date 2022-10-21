@@ -440,7 +440,7 @@ class CommonWidgets {
                             paymentInfo.form80G = null;
                             Get.to(
                                 () => PatymPaymentScrenn(
-                                      paymentInfo: paymentInfo,
+                                     // paymentInfo: paymentInfo,
                                     ),
                                 opaque: false,
                                 fullscreenDialog: true);

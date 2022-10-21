@@ -21,8 +21,14 @@ import 'PaymentScreen.dart';
 
 
 class PatymPaymentScrenn extends StatefulWidget {
-  PatymPaymentScrenn({Key key, this.paymentInfo}) : super(key: key);
+
+
+  PatymPaymentScrenn({Key key,  this.name, this.email, this.phonenumber, this.amount, this.paymentInfo}) : super(key: key);
   final PaymentInfo paymentInfo;
+  final email;
+  final phonenumber;
+  final amount;
+  final name ;
   String amountInPaise = '0';
   @override
   State<PatymPaymentScrenn> createState() => _PatymPaymentScrennState();
@@ -31,11 +37,12 @@ class PatymPaymentScrenn extends StatefulWidget {
 class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
   BookingsBlocUser _bookingsBlocUser;
   PaymentInfo paymentInfo;
+
   String result;
   @override
   void initState() {
     super.initState();
-    paymentInfo = widget.paymentInfo;
+    paymentInfo = paymentInfo;
     _bookingsBlocUser = BookingsBlocUser();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _initPayment();
@@ -53,16 +60,17 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
   }
   Future _initPayment() async {
     //  AppDialogs.loading();
-    print("cc->>>>>>>${ paymentInfo.name}");
+    print("cc->>>>>>>${ widget.amount}");
     try {
-      TestPaymentModel response = await _bookingsBlocUser
-          .bookAppointment(paymentInfo.name,
-          paymentInfo.email,
-          paymentInfo.mobile,
-          paymentInfo.amount
+ TestPaymentModel response = await _bookingsBlocUser
+          .bookAppointment(widget.name,
+                           widget.amount,
+        widget.email,
+            widget.phonenumber,
+
       );
       Get.back();
-      print("start Transaction------------------");
+     print("StartTransaction->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
       await _startTransaction(
         response.mid,
         response.order_id,

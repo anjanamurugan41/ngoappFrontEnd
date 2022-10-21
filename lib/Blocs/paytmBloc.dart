@@ -40,18 +40,19 @@ class BookingsBlocUser {
 
   Future<TestPaymentModel> bookAppointment(
       String name,
+       int amount,
       String email,
-      String mobile,
-      String amount
+      String phone,
+
       ) async {
     try {
 
       TestPaymentModel response =
       await _bookingRepository.Paytmpay(
         name,
+        amount.toString(),
         email,
-        mobile,
-        amount,
+       phone,
 
       );
       return response;

@@ -27,4 +27,5 @@ dispose() {
   detailSink?.close();
   _gatewayKeyController?.close();
 }
+
 }
