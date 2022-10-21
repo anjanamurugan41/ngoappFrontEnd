@@ -41,9 +41,12 @@ class AuthorisationRepository {
   }
 
   Future<ProfileResponse> updateProfile(FormData formData) async {
+    print("updateProfile->>>>>>>${formData.fields}");
     final response = await apiProvider.getMultipartInstance().post(
         RemoteConfig.updateProfile,
         data: formData);
+    print("response->${response}");
+
     return ProfileResponse.fromJson(response.data);
   }
 }
