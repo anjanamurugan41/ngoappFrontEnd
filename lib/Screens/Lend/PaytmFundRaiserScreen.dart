@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:ngo_app/Blocs/paymentchecksum.dart';
@@ -20,21 +21,22 @@ import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 import 'PaymentScreen.dart';
 
 
-class PatymPaymentScrenn extends StatefulWidget {
+class PaytmFundRaiserScreen extends StatefulWidget {
 
 
-  PatymPaymentScrenn({Key key,  this.name, this.email, this.phonenumber, this.amount, this.paymentInfo}) : super(key: key);
+  PaytmFundRaiserScreen({Key key,  this.name, this.email, this.phonenumber, this.amount, this.paymentInfo,this.fundraise_id}) : super(key: key);
   final PaymentInfo paymentInfo;
   final email;
   final phonenumber;
   final amount;
   final name ;
+  final fundraise_id;
   String amountInPaise = '0';
   @override
-  State<PatymPaymentScrenn> createState() => _PatymPaymentScrennState();
+  State<PaytmFundRaiserScreen> createState() => _PaytmFundRaiserScreenState();
 }
 
-class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
+class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
   BookingsBlocUser _bookingsBlocUser;
   PaymentInfo paymentInfo;
 
@@ -62,15 +64,15 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
     //  AppDialogs.loading();
     print("cc->>>>>>>${ widget.amount}");
     try {
- TestPaymentModel response = await _bookingsBlocUser
-          .bookAppointment(widget.name,
-                           widget.amount,
+      TestPaymentModel response = await _bookingsBlocUser
+          .FundRaiser(widget.name,
+        widget.amount,
         widget.email,
-            widget.phonenumber,
-
+        widget.phonenumber,
+        widget.fundraise_id
       );
       Get.back();
-     print("StartTransaction->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print("StartTransaction->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
       await _startTransaction(
         response.mid,
         response.order_id,
@@ -112,22 +114,24 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
           result = value.toString();
           Text("Payment Succesfully Completed,Check bookings section");
         });
-        await _validateCheckSum(value);
+        await _validateCheckSum(value["ORDERID"]);
 
         await Future.delayed(Duration(seconds: 1));
         Get.offAll(() => Home());
       }).catchError((onError) {
         if (onError is PlatformException) {
           //AppDialogs.message("Payment failed, Please try again");
-          setState(() {
+          setState(() async {
             result = onError.message + " \n  " + onError.details.toString();
             Text("Payment failed, Please try again");
+            await _validateCheckSum(onError.details["ORDERID"]);
           });
         } else {
           //AppDialogs.message("Payment failed, Please try again");
-          setState(() {
+          setState(() async {
             result = onError.toString();
             Text("Payment failed, Please try again");
+            await _validateCheckSum(onError.details["ORDERID"]);
           });
         }
       });
@@ -138,14 +142,19 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
   }
 
   PaymentBlocUser _paymentBlocUser = PaymentBlocUser();
-  Future _validateCheckSum(Map resp) async {
+  Future _validateCheckSum(String orderId) async {
+    // AppDialogs.loading();
     try {
-      CommonResponse response = await _paymentBlocUser.validateCheckSum(resp);
+      CommonResponse response =
+      await _paymentBlocUser.validateCheckSumfund(orderId);
+      Get.back();
+      Fluttertoast.showToast(msg:response.message);
     } catch (e, s) {
       Completer().completeError(e, s);
-      //Get.back();
-      Text('Something went wrong. Please try again');
+      Get.back();
+      Fluttertoast.showToast(msg: 'Something went wrong. Please try again');
     }
   }
+
 }
 

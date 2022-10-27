@@ -62,6 +62,31 @@ class BookingsBlocUser {
     }
   }
 
+  Future<TestPaymentModel> FundRaiser(
+      String name,
+      int amount,
+      String email,
+      String phone,
+      int fundraise_id
+      ) async {
+    try {
+
+      TestPaymentModel response =
+      await _bookingRepository.FundRaise(
+        name,
+        amount.toString(),
+        email,
+        phone,
+        fundraise_id,
+
+      );
+      return response;
+    } catch (e, s) {
+      Completer().completeError(e, s);
+      throw e;
+    }
+  }
+
 
 // Future<String?> fetchGoogleMeetLink(String bookingId) async {
 //   try {

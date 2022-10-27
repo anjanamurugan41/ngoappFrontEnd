@@ -231,6 +231,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                     child: InkWell(
                       onTap: ()=> launch("mailto:$mail"),
                       child: Text(mail,
+                        textAlign: TextAlign.justify,
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -293,6 +294,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                       onTap: ()=>launch("tel:+91 $number"),
                       child: Text(
                         number,
+                        textAlign: TextAlign.justify,
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -354,6 +356,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                     child: Text(
                       "CROWD WORKS INDIA FOUNDATION,ALAMPARAMBIL BUILDING, 13/1013-5,2ND FLOOR, TK ROAD, THIRUVALLA,KERALA, 689101.TOLL FREE: 1800 890 1811TIME: MON - FRI (9:00 - 19:00)",
                       // "330 Bay street, 6th floor, Red cross, United kingdom",
+                      textAlign: TextAlign.justify,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

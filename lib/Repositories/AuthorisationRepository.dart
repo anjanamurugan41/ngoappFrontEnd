@@ -52,7 +52,6 @@ class AuthorisationRepository {
 
   Future<PancardResponse> pancardupload(
     File reportFile) async {
-
     String fileName = reportFile.path.split('/').last;
     print("->>${fileName}");
     print("->${reportFile.path}");

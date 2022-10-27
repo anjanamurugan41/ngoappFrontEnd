@@ -52,4 +52,23 @@ class TestRepositoryUser {
   }
 // return response;
 
+  Future<TestPaymentModel> FundRaise(
+      String name,
+      String amount,
+      String email,
+      String phone,
+      int fundraise_id
+      ) async {
+    final response = await apiProvider.getInstance().post(
+        'paytm/fundraiser-initiate',
+        data: {
+          "name": name,
+          "amount": amount,
+          "email":email,
+          "phone":phone,
+          "fundraiser_id":fundraise_id,
+
+        });
+    return TestPaymentModel.fromJson(response.data);
+  }
 }
