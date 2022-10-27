@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:ngo_app/Models/CommonResponse.dart';
 import 'package:ngo_app/Models/OtpResponse.dart';
-import 'package:ngo_app/Models/PancardUploadResponse.dart';
 import 'package:ngo_app/Models/ProfileResponse.dart';
 
 import '../Models/LoginResponse.dart';
@@ -44,11 +41,12 @@ class AuthorisationRepository {
   }
 
   Future<ProfileResponse> updateProfile(FormData formData) async {
+    print("updateProfile->>>>>>>${formData.fields}");
     final response = await apiProvider.getMultipartInstance().post(
         RemoteConfig.updateProfile,
         data: formData);
-    return ProfileResponse.fromJson(response.data);
-  }
+    print("response->${response}");
+
 
   Future<PancardResponse> pancardupload(
     File reportFile) async {
@@ -65,6 +63,8 @@ class AuthorisationRepository {
         .post('${RemoteConfig.pancardupload}', data: formData);
     print("->>>>>>>>>>>${response}");
     return PancardResponse.fromJson(response.data);
-  }
 
+    return ProfileResponse.fromJson(response.data);
+
+  }
 }

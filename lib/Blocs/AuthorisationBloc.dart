@@ -45,6 +45,7 @@ class AuthorisationBloc {
   }
 
   Future<ProfileResponse> updateProfile(FormData formData) async {
+    print("dss->${formData}");
     try {
       ProfileResponse response =
           await authorisationRepository.updateProfile(formData);
@@ -53,5 +54,4 @@ class AuthorisationBloc {
       throw CommonMethods().getNetworkError(error);
     }
   }
-
 }
