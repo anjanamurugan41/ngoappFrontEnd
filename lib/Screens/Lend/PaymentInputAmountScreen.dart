@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,7 +11,13 @@ import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/EnumValues.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
+import 'package:ngo_app/Models/UserDetails.dart';
+import 'package:ngo_app/Screens/Dashboard/Home.dart';
+import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
 import 'package:ngo_app/Screens/MakeDonation/AddDonorInfoScreen.dart';
+import 'package:ngo_app/Utilities/LoginModel.dart';
+import 'package:ngo_app/Utilities/PreferenceUtils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'PaymentScreen.dart';
 
 class PaymentInputAmountScreen extends StatefulWidget {
@@ -37,6 +45,8 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
   _PaymentInputAmountScreenState(this._amount);
 
   String _amount;
+  String authToken;
+  PaymentInfo paymentinfo;
   List<String> amountsInfo = [
     "1000",
     "2000",
@@ -52,7 +62,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   bool _isSubscriptionAvailable = false;
-
+  UserDetails userDetails;
   @override
   void initState() {
     super.initState();
@@ -185,7 +195,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
                 bgColorReceived: Color(colorCoderRedBg),
                 borderColorReceived: Color(colorCoderRedBg),
                 textColorReceived: Color(colorCodeWhite),
-                buttonHandler: _nextBtnClickFunction),
+                buttonHandler: getSharedPreferences),
           ),
         ));
   }
@@ -219,7 +229,16 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
         CommonWidgets().show80GFormAlertDialog(context, paymentInfo);
         // Navigator.of(context).push(PageRouteBuilder(opaque: false, pageBuilder: (_, __, ___) => PaymentScreen(paymentInfo: paymentInfo,)));
       } else if (widget.paymentType == PaymentType.Donation) {
-        Get.to(() => AddDonorInfoScreen(paymentInfo: paymentInfo));
+
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // var data = prefs.getString(PreferenceUtils.prefUserDetails) ?? "";
+        // userDetails = UserDetails.fromJson(json.decode(data));
+        // LoginModel().userDetails = userDetails;
+        // print("paymentIfo->>>>>>${userDetails.name}");
+
+
+        Get.to(() =>
+            PatymPaymentScrenn(name: userDetails.name,email: userDetails.email,phonenumber: userDetails.phoneNumber,amount:1,));
       } else {
         //neglect
       }
@@ -393,6 +412,48 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
       setState(() {
         _isSubscriptionAvailable = false;
       });
+    }
+  }
+  void getSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      authToken = prefs.getString(PreferenceUtils.prefAuthToken) ?? "";
+      print(authToken);
+      if (authToken != "") {
+        var data = prefs.getString(PreferenceUtils.prefUserDetails) ?? "";
+        if (data != "") {
+          userDetails = UserDetails.fromJson(json.decode(data));
+          if (userDetails != null) {
+            LoginModel().authToken = authToken;
+            LoginModel().userDetails = userDetails;
+            print("*************************");
+            _nextBtnClickFunction();
+            print("*************************");
+           // OneSignalNotifications().handleSendTags();
+          }
+          else {
+            print("*******");
+            print("userDetails is null");
+            print("*******");
+
+          }
+
+
+        } else {
+          print("*******");
+          print("data is empty");
+          print("*******");
+        }
+      }
+      else {
+        print("*******");
+        Get.to(() =>AddDonorInfoScreen());
+        print("*******");
+
+      }
+     // startTime();
+    } catch (Exception) {
+   Text("");
     }
   }
 }

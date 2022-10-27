@@ -273,7 +273,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
 
       Get.to(
           () => PatymPaymentScrenn(
-                paymentInfo: paymentInfo,
+               // paymentInfo: paymentInfo,
               ),
           opaque: false,
           fullscreenDialog: true);

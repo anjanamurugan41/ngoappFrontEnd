@@ -52,6 +52,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: WillPopScope(
+
         onWillPop: onWillPop,
         child: Scaffold(
           backgroundColor: Color(colorCodeGreyPageBg),
@@ -248,10 +249,10 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
             countryCode: _countryCode,
             mobile: _phone.trim());
       }
-
+print("name->>>>>>${ paymentInfo.name}");
       Get.to(
-              () => PatymPaymentScrenn(
-            paymentInfo: paymentInfo,
+              () => PatymPaymentScrenn(name: paymentInfo.name,email: paymentInfo.email,phonenumber: paymentInfo.mobile,amount: paymentInfo.amount,
+
           ),
           opaque: false,
           fullscreenDialog: true);
@@ -298,6 +299,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
           ],
         ),
         SizedBox(height: MediaQuery.of(context).size.height * .01),
+
       ],
     );
   }

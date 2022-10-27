@@ -3,10 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Screens/Authorization/LoginScreen.dart';
-
 import '../Constants/CustomColorCodes.dart';
 import '../Constants/StringConstants.dart';
-import '../Utilities/LoginModel.dart';
 import 'Authorization/SignUpScreen.dart';
 import 'Dashboard/Home.dart';
 
@@ -46,7 +44,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   image: AssetImage('assets/images/ic_splash_bg.png'),
                   fit: BoxFit.fill)),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Expanded(
