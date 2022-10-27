@@ -1,26 +1,28 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
-import 'package:ngo_app/Blocs/panbloc.dart';
 import 'package:ngo_app/Constants/CommonMethods.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/EnumValues.dart';
+import 'package:ngo_app/Constants/StringConstants.dart';
 import 'package:ngo_app/CustomLibraries/CustomLoader/RoundedLoader.dart';
 import 'package:ngo_app/CustomLibraries/ImagePickerAndCropper/image_picker_handler.dart';
+import 'package:ngo_app/CustomLibraries/TextDrawable/TextDrawableWidget.dart';
+import 'package:ngo_app/CustomLibraries/TextDrawable/color_generator.dart';
 import 'package:ngo_app/Elements/CommonApiErrorWidget.dart';
 import 'package:ngo_app/Elements/CommonApiLoader.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
+import 'package:ngo_app/Elements/CommonTextFormField.dart';
 import 'package:ngo_app/Elements/EachListItemWidget.dart';
 import 'package:ngo_app/Elements/PainationLoader.dart';
 import 'package:ngo_app/Interfaces/LoadMoreListener.dart';
 import 'package:ngo_app/Interfaces/RefreshPageListener.dart';
 import 'package:ngo_app/Models/CommonResponse.dart';
-import 'package:ngo_app/Models/PancardUploadResponse.dart';
 import 'package:ngo_app/Screens/Dashboard/Home.dart';
 import 'package:ngo_app/Screens/Dashboard/ViewAllScreen.dart';
 import 'package:ngo_app/Screens/DetailPages/ItemDetailScreen.dart';
@@ -37,7 +39,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   bool isLoadingMore = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _documentName = new TextEditingController();
-  PanBloc _panbloc;
+
   String _imageUrl = "";
   ImagePickerHandler imagePicker;
   AnimationController _controller;
@@ -46,17 +48,16 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   @override
   File _image;
   void initState() {
-    super.initState();
-    _panbloc = PanBloc();
-    _controller = new AnimationController(
-      duration: const Duration(milliseconds: 500),
+      super.initState();
 
+      _controller = new AnimationController(
+        duration: const Duration(milliseconds: 500),
 
-      vsync: this,
-    );
-    imagePicker = new ImagePickerHandler(this,_controller);
-    imagePicker.init();
-    // initFields();
+        vsync: this,
+      );
+      imagePicker = new ImagePickerHandler(this,_controller);
+      imagePicker.init();
+      // initFields();
   }
 
 
@@ -93,24 +94,8 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    _buildUserWidget(),
+                  //_buildUserWidget(),
                     _uploadDocumentWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Your Pan Card",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    _showdocumentsectin(),
                     Visibility(
                       child: PaginationLoader(),
                       visible: isLoadingMore ? true : false,
@@ -118,7 +103,8 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                   ],
                 ),
               )),
-          floatingActionButton: Padding(
+          floatingActionButton:
+          Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: CommonWidgets().showHelpDesk(),
           ),
@@ -129,9 +115,9 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
 
   void _errorWidgetFunction() {
     // if (_commentsBloc != null) _commentsBloc.getAllComments(false, null);
-    Container(
-      child: Text("Hai"),
-    );
+  Container(
+    child: Text("Hai"),
+  );
   }
 
 
@@ -154,91 +140,91 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     }
   }
 
-  _buildMessageSection() {
-    return Container(
-      alignment: FractionalOffset.center,
-      padding: EdgeInsets.fromLTRB(0, 15, 0, 10),
-      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      decoration: BoxDecoration(
-          color: Color(colorCoderRedBg),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 3,
-              blurRadius: 4,
-              offset: Offset(0, 2), // changes position of shadow
-            ),
-          ]),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            alignment: FractionalOffset.center,
-            child: Text(
-              "Want to be the cool kind on the block?",
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.0),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-            alignment: FractionalOffset.center,
-            child: Text(
-              "Check out our latest fundraisers",
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 11.0),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(10.0),
-              ),
-              primary: Colors.white,
-              elevation: 0.0,
-              padding: EdgeInsets.fromLTRB(15, 3, 15, 3),
-              side: BorderSide(
-                width: 2.0,
-                color: Colors.transparent,
-              ),
-            ),
-            onPressed: () {
-              Get.offAll(() => DashboardScreen(
-                fragmentToShow: 1,
-              ));
-            },
-            child: Text(
-              "Browse fundraisers",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Color(colorCoderRedBg),
-                  fontSize: 14,
-                  fontFamily: 'roboto',
-                  fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // _buildMessageSection() {
+  //   return Container(
+  //     alignment: FractionalOffset.center,
+  //     padding: EdgeInsets.fromLTRB(0, 15, 0, 10),
+  //     margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+  //     decoration: BoxDecoration(
+  //         color: Color(colorCoderRedBg),
+  //         borderRadius: BorderRadius.only(
+  //             topLeft: Radius.circular(15),
+  //             topRight: Radius.circular(15),
+  //             bottomLeft: Radius.circular(15),
+  //             bottomRight: Radius.circular(15)),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: Colors.grey.withOpacity(0.2),
+  //             spreadRadius: 3,
+  //             blurRadius: 4,
+  //             offset: Offset(0, 2), // changes position of shadow
+  //           ),
+  //         ]),
+  //     child: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       children: <Widget>[
+  //         Container(
+  //           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+  //           alignment: FractionalOffset.center,
+  //           child: Text(
+  //             "Want to be the cool kind on the block?",
+  //             maxLines: 2,
+  //             textAlign: TextAlign.center,
+  //             overflow: TextOverflow.ellipsis,
+  //             style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontWeight: FontWeight.w600,
+  //                 fontSize: 12.0),
+  //           ),
+  //         ),
+  //         Container(
+  //           padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+  //           alignment: FractionalOffset.center,
+  //           child: Text(
+  //             "Check out our latest fundraisers",
+  //             maxLines: 2,
+  //             textAlign: TextAlign.center,
+  //             overflow: TextOverflow.ellipsis,
+  //             style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontWeight: FontWeight.w500,
+  //                 fontSize: 11.0),
+  //           ),
+  //         ),
+  //         ElevatedButton(
+  //           style: ElevatedButton.styleFrom(
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(10.0),
+  //             ),
+  //             primary: Colors.white,
+  //             elevation: 0.0,
+  //             padding: EdgeInsets.fromLTRB(15, 3, 15, 3),
+  //             side: BorderSide(
+  //               width: 2.0,
+  //               color: Colors.transparent,
+  //             ),
+  //           ),
+  //           onPressed: () {
+  //             Get.offAll(() => DashboardScreen(
+  //               fragmentToShow: 1,
+  //             ));
+  //           },
+  //           child: Text(
+  //             "Browse fundraisers",
+  //             textAlign: TextAlign.center,
+  //             style: TextStyle(
+  //                 color: Color(colorCoderRedBg),
+  //                 fontSize: 14,
+  //                 fontFamily: 'roboto',
+  //                 fontWeight: FontWeight.w600),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   _buildRecommendedSection() {
     if (LoginModel().relatedItemsList != null) {
@@ -361,57 +347,97 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     }
   }
   Widget _uploadDocumentWidget() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: Text(
-            "Upload Your Pan Card",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+    var _blankFocusNode = new FocusNode();
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(_blankFocusNode);
+      },
+      child: Container(
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * .01),
+              Center(
+                child: Text(
+                  "Upload Documents",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+              ),
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * .03),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                child: Text(
+                  "Document Name",
+                  style: TextStyle(color: Color(colorCodeBlack), fontWeight: FontWeight.w600),
+                ),
+              ),
+              Padding(
+                child: CommonTextFormField(
+                    hintText: "Document Name",
+                    maxLinesReceived: 1,
+                    maxLengthReceived: 150,
+                    controller: _documentName,
+                    textColorReceived: Color(colorCodeBlack),
+                    fillColorReceived: Colors.black12,
+                    hintColorReceived: Colors.black87,
+                    borderColorReceived: Color(colorCoderBorderWhite),
+                    onChanged: (val) => _documentName = val,
+                    validator: CommonMethods().nameValidator),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+              ),
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * .01),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                child: Text(
+                  "Document Image",
+                  style: TextStyle(color: Color(colorCodeBlack), fontWeight: FontWeight.w600),
+                ),
+              ),
+              _buildImageSection(),
+              Container(
+                height: 50.0,
+                width: double.infinity,
+                margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                child: CommonButton(
+                    buttonText: "Upload",
+                    bgColorReceived: Color(colorCoderRedBg),
+                    borderColorReceived: Color(colorCoderRedBg),
+                    textColorReceived: Color(colorCodeWhite),
+                    buttonHandler:_nextBtnClickFunction),
+              ),
+            ],
           ),
         ),
-        SizedBox(
-          height: 20,
-        ),
-        _buildImageSection(),
-        SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: Container(
-            height: 50.0,
-            width: 300,
-            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-            child: CommonButton(
-              bgColorReceived: Color(colorCoderRedBg),
-              borderColorReceived: Color(colorCoderRedBg),
-              textColorReceived: Color(colorCodeWhite),
-              buttonHandler: () async {
-                print("image->${_image}");
-                if (_image != null) {
-                  await _updateDocument(_image);
-                   // _image = null;
-                  setState(() {});
-                }
-                return Fluttertoast.showToast(msg: "Select Document Image");
-              },
-              buttonText:"Upload",
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-      ],
+      ),
     );
   }
+  void _nextBtnClickFunction() {
+    print("_clearBtnClickFunction clicked");
+      if (_formKey.currentState.validate()) {
+        FocusScope.of(context).requestFocus(FocusNode());
 
+        if (_image != null) {
+          // LoginModel().userDetails["_imageUrl"] = _image;
+        }
+         LoginModel().startFundraiserMap["patient_name"] = _documentName.text.trim();
+        Fluttertoast.showToast(msg: "SuccessFully Uploaded");
+        // Get.to(() => );
+      } else {
+        Fluttertoast.showToast(msg: StringConstants.formValidationMsg);
+        return;
+    }
+
+  }
   _showdocumentsectin(){
     return  StreamBuilder(
         builder: (context, snapshot) {
+          // stream: _profileBlocUser.userRecordStream,
           if (snapshot.hasData) {
             switch (snapshot.data.status) {
               case Status.LOADING:
@@ -433,10 +459,25 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                               _documentName.text,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
                               InkWell(
                                 onTap: () {
                                   Get.to(() =>
-                                      Image(image: FileImage(File(_image.path)),),);
+                                    Image(image: FileImage(File(_image.path)),),);
+                                    // Image.asset(
+                                    //   "$_image",fit: BoxFit.cover,
+                                    //   ),),
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(5),
@@ -471,42 +512,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
           );
         });
 
-  }
-
-  // void _nextBtnClickFunction() {
-  //   print("_clearBtnClickFunction clicked");
-  //   if (_formKey.currentState.validate()) {
-  //     FocusScope.of(context).requestFocus(FocusNode());
-  //     if (_image != null) {
-  //       LoginModel().userDetails.pancardimage = _image as String;
-  //     }
-  //     Fluttertoast.showToast(msg: "SuccessFully Uploaded");
-  //     // Get.to(() => );
-  //   } else {
-  //     Fluttertoast.showToast(msg: StringConstants.formValidationMsg);
-  //     return;
-  //   }
-  // }
-
-  Future _updateDocument( File reportFile) async {
-    try {
-      PancardResponse response =
-      await _panbloc.uploadUserRecords( reportFile);
-      Get.back();
-      print("response==>${response}");
-
-      if (response.success) {
-
-        Fluttertoast.showToast(msg: "${response.message}");
-        await _panbloc.uploadUserRecords( reportFile);
-
-      } else {
-        Fluttertoast.showToast(msg: "${response.message}");
-      }
-    } catch (e, s) {
-      Completer().completeError(e, s);
-      Fluttertoast.showToast(msg: "Something went wrong. Please try again");
-    }
   }
 
   _buildImageSection() {
@@ -558,6 +563,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       ),
     );
   }
+
 
   Widget showImage() {
     if (LoginModel().isFundraiserEditMode) {
@@ -651,34 +657,29 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       );
     }
   }
+  Future _updateDocument(String reportName, XFile reportFile) async {
+   // AppDialogs.loading();
 
-  @override
+    try {
+      CommonResponse response =
+      await _profileBlocUser.uploadUserRecords(reportName, reportFile);
+      Get.back();
 
-  _buildUserWidget() {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          _buildMessageSection(),
-          Visibility(
-            child: _buildRecommendedSection(),
-            visible: isLoadingMore ? false : true,
-          ),
-          Visibility(
-            child: SizedBox(
-              height: 15,
-            ),
-            visible: isLoadingMore ? false : true,
-          ),
-        ],
-      ),
-    );
+      if (response.success!) {
+        toastMessage('${response.message!}');
+        await _profileBlocUser.getUserRecords(User.userId);
+      } else {
+        toastMessage('${response.message!}');
+      }
+    } catch (e, s) {
+      Completer().completeError(e, s);
+      Get.back();
+      toastMessage('Something went wrong. Please try again');
+    }
   }
 
-}
 
 
+
+    }
 

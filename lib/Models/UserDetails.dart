@@ -9,7 +9,6 @@ class UserDetails {
   String _baseUrl;
   int _countryCode;
   int _points;
-  String _pancard_image;
 
   UserDetails(
       {int id,
@@ -21,7 +20,6 @@ class UserDetails {
       String imageUrl,
       String baseUrl,
       int countryCode,
-        String pancard_image,
       int points}) {
     this._id = id;
     this._role = role;
@@ -32,7 +30,6 @@ class UserDetails {
     this._imageUrl = imageUrl;
     this._baseUrl = _baseUrl;
     this._countryCode = countryCode;
-    this._pancard_image=pancard_image;
     this._points = points;
   }
 
@@ -68,10 +65,6 @@ class UserDetails {
 
   set countryCode(int countryCode) => _countryCode = countryCode;
 
-  String get pancardimage =>_pancard_image;
-
-  set pancardimage(String pancard_image)=> pancard_image= pancardimage;
-
   int get points => _points;
 
   set points(int points) => _points = points;
@@ -92,7 +85,6 @@ class UserDetails {
     _imageUrl = json['image_url'] ?? "";
     _baseUrl = json['baseUrl'] ?? "";
     _countryCode = json['country_code'];
-    _pancard_image= json['pancrad_image'];
     _points = json['points'];
   }
 
@@ -107,7 +99,6 @@ class UserDetails {
     data['image_url'] = this._imageUrl;
     data['baseUrl'] = this._baseUrl;
     data['country_code'] = this._countryCode;
-    data['pancrad_image']= this._pancard_image;
     data['points'] = this._points;
     return data;
   }
