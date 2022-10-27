@@ -35,7 +35,7 @@ class MyDocumentsScreen extends StatefulWidget {
 }
 
 class _MyDocumentsScreenState extends State<MyDocumentsScreen>
-    with LoadMoreListener, RefreshPageListener,  TickerProviderStateMixin, ImagePickerListener  {
+    with LoadMoreListener, RefreshPageListener,  TickerProviderStateMixin, ImagePickerListener {
   bool isLoadingMore = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _documentName = new TextEditingController();
@@ -47,17 +47,26 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
 
   @override
   File _image;
+
   void initState() {
       super.initState();
 
       _controller = new AnimationController(
         duration: const Duration(milliseconds: 500),
 
+
+      vsync: this,
+    );
+    imagePicker = new ImagePickerHandler(this, _controller);
+    imagePicker.init();
+    // initFields();
+
         vsync: this,
       );
       imagePicker = new ImagePickerHandler(this,_controller);
       imagePicker.init();
       // initFields();
+
   }
 
 
@@ -94,7 +103,14 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+
+                    _buildMessageSection(),
+                    SizedBox(
+                      height: 20,
+                    ),
+
                   //_buildUserWidget(),
+
                     _uploadDocumentWidget(),
                     Visibility(
                       child: PaginationLoader(),
@@ -114,10 +130,14 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   }
 
   void _errorWidgetFunction() {
+
+    if (_panbloc != null) _panbloc.getpancardinfo(false);
+
     // if (_commentsBloc != null) _commentsBloc.getAllComments(false, null);
   Container(
     child: Text("Hai"),
   );
+
   }
 
 
@@ -138,6 +158,94 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       });
       print(isLoadingMore);
     }
+  }
+
+
+  _buildMessageSection() {
+    return Container(
+      alignment: FractionalOffset.center,
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 10),
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      decoration: BoxDecoration(
+          color: Color(colorCoderRedBg),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 3,
+              blurRadius: 4,
+              offset: Offset(0, 2), // changes position of shadow
+            ),
+          ]),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            alignment: FractionalOffset.center,
+            child: Text(
+              "Want to be the cool kind on the block?",
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.0),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+            alignment: FractionalOffset.center,
+            child: Text(
+              "Check out our latest fundraisers",
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11.0),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(10.0),
+              ),
+              primary: Colors.white,
+              elevation: 0.0,
+              padding: EdgeInsets.fromLTRB(15, 3, 15, 3),
+              side: BorderSide(
+                width: 2.0,
+                color: Colors.transparent,
+              ),
+            ),
+            onPressed: () {
+              Get.offAll(() =>
+                  DashboardScreen(
+                    fragmentToShow: 1,
+                  ));
+            },
+            child: Text(
+              "Browse fundraisers",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Color(colorCoderRedBg),
+                  fontSize: 14,
+                  fontFamily: 'roboto',
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // _buildMessageSection() {
@@ -226,107 +334,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   //   );
   // }
 
-  _buildRecommendedSection() {
-    if (LoginModel().relatedItemsList != null) {
-      if (LoginModel().relatedItemsList.length > 0) {
-        return Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          alignment: FractionalOffset.centerLeft,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      alignment: FractionalOffset.centerLeft,
-                      child: Text(
-                        "Related",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            color: Color(colorCodeBlack),
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                    ),
-                    flex: 1,
-                  ),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                        ),
-                        primary: Colors.transparent,
-                        elevation: 0.0,
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      ),
-                      onPressed: () {
-                        CommonMethods().clearFilters();
-                        Get.to(() => ViewAllScreen());
-                      },
-                      child: Text("View All",
-                          textAlign: TextAlign.center,
-                          style: new TextStyle(
-                              fontSize: 10.0,
-                              color: Color(colorCoderRedBg),
-                              fontWeight: FontWeight.w500))),
-                  SizedBox(
-                    width: 10,
-                  )
-                ],
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * .45,
-                alignment: FractionalOffset.centerLeft,
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: LoginModel().relatedItemsList.length,
-                    physics: ClampingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                    itemBuilder: (BuildContext ctx, int index) {
-                      return EachListItemWidget(
-                          _passedRecommendedFunction,
-                          index,
-                          ScrollType.Horizontal,
-                          LoginModel().relatedItemsList[index],
-                          LoginModel().relatedItemsImageBase,
-                          LoginModel().relatedItemsWebBaseUrl);
-                    }),
-              ),
-            ],
-          ),
-        );
-      } else {
-        return Container();
-      }
-    } else {
-      return Container();
-    }
-  }
 
-  void _passedRecommendedFunction(int itemId) async {
-    print("Clicked on : $itemId");
-    Map<String, bool> data = await Get.to(() => ItemDetailScreen(itemId));
-    if (mounted && data != null) {
-      if (data.containsKey("isFundraiserWithdrawn")) {
-        if (data["isFundraiserWithdrawn"]) {
-          // if (_myDonationsBloc != null) {
-          //   _myDonationsBloc.getItems(false);
-          // }
-        }
-      }
-    }
-  }
   @override
   userImage(File _image) {
     if (_image != null) {
@@ -337,6 +345,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       Fluttertoast.showToast(msg: "Unable to set image");
     }
   }
+
   @override
   void refreshPage() {
     if (mounted) {
@@ -346,7 +355,48 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       });
     }
   }
+
   Widget _uploadDocumentWidget() {
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 10,
+        ),
+        Center(
+          child: Text(
+            "Upload Your Pan Card",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        _buildImageSection(),
+        SizedBox(
+          height: 10,
+        ),
+        Center(
+          child: Container(
+            height: 50.0,
+            width: 300,
+            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+            child: CommonButton(
+              bgColorReceived: Color(colorCoderRedBg),
+              borderColorReceived: Color(colorCoderRedBg),
+              textColorReceived: Color(colorCodeWhite),
+              buttonHandler: () async {
+                print("image->${_image}");
+                if (_image != null) {
+                  await _updateDocument(_image);
+                  setState(() {});
+                }
+                return Fluttertoast.showToast(msg: "Select Document Image");
+              },
+              buttonText: "Upload",
+            ),
+
     var _blankFocusNode = new FocusNode();
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -422,6 +472,10 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       if (_formKey.currentState.validate()) {
         FocusScope.of(context).requestFocus(FocusNode());
 
+
+  _showdocumentsectin() {
+    return StreamBuilder(
+
         if (_image != null) {
           // LoginModel().userDetails["_imageUrl"] = _image;
         }
@@ -436,6 +490,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   }
   _showdocumentsectin(){
     return  StreamBuilder(
+
         builder: (context, snapshot) {
           // stream: _profileBlocUser.userRecordStream,
           if (snapshot.hasData) {
@@ -474,24 +529,32 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                               InkWell(
                                 onTap: () {
                                   Get.to(() =>
+
+                                      Image(
+                                        image: FileImage(File(_image.path)),),);
+
                                     Image(image: FileImage(File(_image.path)),),);
                                     // Image.asset(
                                     //   "$_image",fit: BoxFit.cover,
                                     //   ),),
+
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(5),
                                   child: CachedNetworkImage(
                                     fit: BoxFit.fitWidth,
                                     imageUrl: _imageUrl,
-                                    placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                    errorWidget: (context, url, error) => Container(
-                                        margin: EdgeInsets.all(5),
-                                        child: Image(
-                                          image: AssetImage('assets/images/ic_404_error.png'),
-                                        )),
+                                    placeholder: (context, url) =>
+                                        Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                            margin: EdgeInsets.all(5),
+                                            child: Image(
+                                              image: AssetImage(
+                                                  'assets/images/ic_404_error.png'),
+                                            )),
                                   ),
                                 ),
                               ),
@@ -508,11 +571,33 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
           }
           return SizedBox(
             height: 30,
-            child: CommonApiLoader(),
+            child: Container(
+              color: Colors.lightBlue,
+            ),
           );
         });
-
   }
+
+
+  Future _updateDocument(File reportFile) async {
+    try {
+      PancardResponse response =
+      await _panbloc.uploadUserRecords(reportFile);
+      Get.back();
+      print("response==>${response}");
+
+      if (response.success) {
+        Fluttertoast.showToast(msg: "${response.message}");
+        await _panbloc.uploadUserRecords(reportFile);
+      } else {
+        Fluttertoast.showToast(msg: "${response.message}");
+      }
+    } catch (e, s) {
+      Completer().completeError(e, s);
+      Fluttertoast.showToast(msg: "Something went wrong. Please try again");
+    }
+  }
+
 
   _buildImageSection() {
     return Container(
@@ -532,7 +617,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
               color: Colors.black12,
               // color: Colors.transparent,
               border: Border.all(
-                color:  Color(colorCoderBorderWhite),
+                color: Color(colorCoderBorderWhite),
               ),
               borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
             ),
@@ -576,15 +661,17 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
             height: double.infinity,
             fit: BoxFit.cover,
             imageUrl: _imageUrl,
-            placeholder: (context, url) => Center(
-              child: RoundedLoader(),
-            ),
-            errorWidget: (context, url, error) => Container(
-              child: Image.asset(
-                ('assets/images/no_image.png'),
-                fit: BoxFit.fill,
-              ),
-            ),
+            placeholder: (context, url) =>
+                Center(
+                  child: RoundedLoader(),
+                ),
+            errorWidget: (context, url, error) =>
+                Container(
+                  child: Image.asset(
+                    ('assets/images/no_image.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
           ),
           padding: EdgeInsets.all(0),
         )
@@ -660,6 +747,10 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   Future _updateDocument(String reportName, XFile reportFile) async {
    // AppDialogs.loading();
 
+
+}
+
+
     try {
       CommonResponse response =
       await _profileBlocUser.uploadUserRecords(reportName, reportFile);
@@ -677,6 +768,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       toastMessage('Something went wrong. Please try again');
     }
   }
+
 
 
 

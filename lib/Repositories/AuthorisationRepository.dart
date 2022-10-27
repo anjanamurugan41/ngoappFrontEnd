@@ -47,6 +47,24 @@ class AuthorisationRepository {
         data: formData);
     print("response->${response}");
 
+
+  Future<PancardResponse> pancardupload(
+    File reportFile) async {
+    String fileName = reportFile.path.split('/').last;
+    print("->>${fileName}");
+    print("->${reportFile.path}");
+    FormData formData = FormData.fromMap({
+      "pancard_image":
+      await MultipartFile.fromFile(reportFile.path, filename: fileName),
+    });
+    print("formdata->>>>${formData.fields}");
+    final response = await apiProvider
+        .getMultipartInstance()
+        .post('${RemoteConfig.pancardupload}', data: formData);
+    print("->>>>>>>>>>>${response}");
+    return PancardResponse.fromJson(response.data);
+
     return ProfileResponse.fromJson(response.data);
+
   }
 }

@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/EnumValues.dart';
 import 'package:ngo_app/Screens/Lend/PaymentInputAmountScreen.dart';
+import 'package:ngo_app/Screens/Lend/PaymentInputFundAmountScreen.dart';
 
-class DonateNowCardWidget extends StatelessWidget {
+class DonateNowCardFundWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,7 +64,7 @@ class DonateNowCardWidget extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              Get.to(() => PaymentInputAmountScreen(
+              Get.to(() => PaymentInputFundAmountScreen(
                   paymentType: PaymentType.Donation,
                   id: null,
                   isCampaignRelated: true,

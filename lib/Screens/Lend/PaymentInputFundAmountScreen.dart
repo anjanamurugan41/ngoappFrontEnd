@@ -12,6 +12,7 @@ import 'package:ngo_app/Constants/EnumValues.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Models/UserDetails.dart';
+import 'package:ngo_app/Screens/Lend/PaytmFundRaiserScreen.dart';
 import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
 import 'package:ngo_app/Screens/MakeDonation/AddDonorInfoScreen.dart';
 import 'package:ngo_app/Utilities/LoginModel.dart';
@@ -19,14 +20,14 @@ import 'package:ngo_app/Utilities/PreferenceUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'PaymentScreen.dart';
 
-class PaymentInputAmountScreen extends StatefulWidget {
+class PaymentInputFundAmountScreen extends StatefulWidget {
   final PaymentType paymentType;
   final int id;
   final int amount;
   final bool isCampaignRelated;
   final bool isForNgoTrust;
 
-  const PaymentInputAmountScreen(
+  const PaymentInputFundAmountScreen(
       {Key key,
         @required this.paymentType,
         @required this.id,
@@ -36,12 +37,12 @@ class PaymentInputAmountScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  _PaymentInputAmountScreenState createState() =>
-      _PaymentInputAmountScreenState('$amount');
+  _PaymentInputFundAmountScreenState createState() =>
+      _PaymentInputFundAmountScreenState('$amount');
 }
 
-class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
-  _PaymentInputAmountScreenState(this._amount);
+class _PaymentInputFundAmountScreenState extends State<PaymentInputFundAmountScreen> {
+  _PaymentInputFundAmountScreenState(this._amount);
 
   String _amount;
   String authToken;
@@ -54,6 +55,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
   UserDetails userDetails;
   @override
   void initState() {
+    print("Page success");
     super.initState();
     _textEditingController.text = "0";
     if (_amount == '0') {
@@ -179,7 +181,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
 
 
         Get.to(() =>
-            PatymPaymentScrenn(name: userDetails.name,email: userDetails.email,phonenumber: userDetails.phoneNumber,amount:1,));
+            PaytmFundRaiserScreen(name: userDetails.name,email: userDetails.email,phonenumber: userDetails.phoneNumber,amount:1,fundraise_id: widget.id,));
       } else {
         //neglect
       }
@@ -370,7 +372,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
             print("*************************");
             _nextBtnClickFunction();
             print("*************************");
-           // OneSignalNotifications().handleSendTags();
+            // OneSignalNotifications().handleSendTags();
           }
           else {
             print("*******");
@@ -392,9 +394,9 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
         print("*******");
 
       }
-     // startTime();
+      // startTime();
     } catch (Exception) {
-   Text("");
+      Text("");
     }
   }
 }

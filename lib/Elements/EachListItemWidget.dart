@@ -10,6 +10,7 @@ import 'package:ngo_app/Constants/EnumValues.dart';
 import 'package:ngo_app/CustomLibraries/CustomLoader/RoundedLoader.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Models/FundraiserItem.dart';
+import 'package:ngo_app/Screens/Lend/PaymentInputFundAmountScreen.dart';
 import 'package:share/share.dart';
 
 import '../Screens/Lend/PaymentInputAmountScreen.dart';
@@ -168,7 +169,7 @@ class _EachListItemWidgetState extends State<EachListItemWidget> {
                                         "Successfully collected the required amount, thank you");
                               } else {
                                 if (CommonMethods().isAuthTokenExist()) {
-                                  Get.to(() => PaymentInputAmountScreen(
+                                  Get.to(() => PaymentInputFundAmountScreen(
                                       paymentType: PaymentType.Donation,
                                       id: widget._fundraiserItem.id,
                                       amount:
