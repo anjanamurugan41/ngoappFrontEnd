@@ -67,7 +67,7 @@ class BookingsBlocUser {
       int amount,
       String email,
       String phone,
-      int fundraise_id
+
       ) async {
     try {
 
@@ -77,7 +77,7 @@ class BookingsBlocUser {
         amount.toString(),
         email,
         phone,
-        fundraise_id,
+
 
       );
       return response;

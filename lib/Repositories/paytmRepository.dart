@@ -57,7 +57,7 @@ class TestRepositoryUser {
       String amount,
       String email,
       String phone,
-      int fundraise_id
+
       ) async {
     final response = await apiProvider.getInstance().post(
         'paytm/fundraiser-initiate',
@@ -66,9 +66,28 @@ class TestRepositoryUser {
           "amount": amount,
           "email":email,
           "phone":phone,
-          "fundraiser_id":fundraise_id,
+
 
         });
     return TestPaymentModel.fromJson(response.data);
   }
+  Future InitiateFundRaise(
+      String amount,
+      String token,
+      String order_id,
+      int fundraiser_id
+      ) async {
+    final response = await apiProvider.getInstance().post(
+        'paytm/update-fundraiser-amount',
+        data: {
+          "amount": 20,
+          "txntoken":token,
+          "order_id":order_id,
+          "fundraiser_id":fundraiser_id
+        });
+    print("response->>>>>>>>>>>${response.data}");
+    return response;
+
+  }
+
 }

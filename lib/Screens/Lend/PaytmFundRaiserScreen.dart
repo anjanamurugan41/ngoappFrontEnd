@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
@@ -12,26 +11,33 @@ import 'package:ngo_app/Blocs/paytmBloc.dart';
 import 'package:ngo_app/Elements/CommonApiLoader.dart';
 import 'package:ngo_app/Models/CommonResponse.dart';
 import 'package:ngo_app/Models/paytmModel.dart';
+import 'package:ngo_app/Repositories/paytmRepository.dart';
 import 'package:ngo_app/Screens/Dashboard/Home.dart';
 
 import 'package:ngo_app/ServiceManager/ApiProvider.dart';
 import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 
-
 import 'PaymentScreen.dart';
 
-
 class PaytmFundRaiserScreen extends StatefulWidget {
-
-
-  PaytmFundRaiserScreen({Key key,  this.name, this.email, this.phonenumber, this.amount, this.paymentInfo,this.fundraise_id}) : super(key: key);
+  PaytmFundRaiserScreen(
+      {Key key,
+      this.name,
+      this.email,
+      this.phonenumber,
+      this.amount,
+      this.paymentInfo,
+      this.fundraise_id})
+      : super(key: key);
   final PaymentInfo paymentInfo;
   final email;
   final phonenumber;
   final amount;
-  final name ;
+  final name;
+
   final fundraise_id;
   String amountInPaise = '0';
+
   @override
   State<PaytmFundRaiserScreen> createState() => _PaytmFundRaiserScreenState();
 }
@@ -39,8 +45,10 @@ class PaytmFundRaiserScreen extends StatefulWidget {
 class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
   BookingsBlocUser _bookingsBlocUser;
   PaymentInfo paymentInfo;
+  TestRepositoryUser intitatefund = TestRepositoryUser();
 
   String result;
+
   @override
   void initState() {
     super.initState();
@@ -49,9 +57,8 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _initPayment();
     });
-
-
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black12.withOpacity(0.5),
@@ -60,17 +67,17 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
       ),
     );
   }
+
   Future _initPayment() async {
     //  AppDialogs.loading();
-    print("cc->>>>>>>${ widget.amount}");
+    print("cc->>>>>>>${widget.amount}");
     try {
-      TestPaymentModel response = await _bookingsBlocUser
-          .FundRaiser(widget.name,
-        widget.amount,
-        widget.email,
-        widget.phonenumber,
-        widget.fundraise_id
-      );
+      TestPaymentModel response = await _bookingsBlocUser.FundRaiser(
+          widget.name,
+          widget.amount,
+          widget.email,
+          widget.phonenumber,
+          );
       Get.back();
       print("StartTransaction->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
       await _startTransaction(
@@ -79,9 +86,9 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
         response.amount.toString(),
         response.body.txnToken,
       );
-      print("mid->>>>>>>>>>>${ response.mid}");
-
-
+      await intitatefund.InitiateFundRaise(response.amount.toString(),
+         response.body.txnToken, response.order_id,widget.fundraise_id);
+      print("mid->>>>>>>>>>>${response.mid}");
     } catch (e, s) {
       Completer().completeError(e, s);
       Get.back();
@@ -90,13 +97,13 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
   }
 
   _startTransaction(
-      String mid,
-      String orderId,
-      String amount,
-      String txnToken, {
-        bool isStaging = true,
-        restrictAppInvoke = true,
-      }) async {
+    String mid,
+    String orderId,
+    String amount,
+    String txnToken, {
+    bool isStaging = true,
+    restrictAppInvoke = true,
+  }) async {
     try {
       var response = AllInOneSdk.startTransaction(
           mid,
@@ -108,15 +115,14 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
           restrictAppInvoke);
       response.then((value) async {
         print("value=======>${value}");
-
-
+        await _validateCheckSum(value["ORDERID"]);
         setState(() {
           result = value.toString();
           Text("Payment Succesfully Completed,Check bookings section");
         });
-        await _validateCheckSum(value["ORDERID"]);
 
-        await Future.delayed(Duration(seconds: 1));
+
+      //  await Future.delayed(Duration(seconds: 1));
         Get.offAll(() => Home());
       }).catchError((onError) {
         if (onError is PlatformException) {
@@ -142,19 +148,18 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
   }
 
   PaymentBlocUser _paymentBlocUser = PaymentBlocUser();
+
   Future _validateCheckSum(String orderId) async {
     // AppDialogs.loading();
     try {
       CommonResponse response =
-      await _paymentBlocUser.validateCheckSumfund(orderId);
+          await _paymentBlocUser.validateCheckSumfund(orderId, widget.fundraise_id.toString());
       Get.back();
-      Fluttertoast.showToast(msg:response.message);
+      Fluttertoast.showToast(msg: response.message);
     } catch (e, s) {
       Completer().completeError(e, s);
       Get.back();
       Fluttertoast.showToast(msg: 'Something went wrong. Please try again');
     }
   }
-
 }
-

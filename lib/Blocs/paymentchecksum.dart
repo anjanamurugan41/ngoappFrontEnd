@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
-
 import '../../Models/CommonResponse.dart';
 import '../../ServiceManager/ApiProvider.dart';
 
@@ -21,9 +19,9 @@ class PaymentBlocUser {
       throw e;
     }
   }
-  Future<CommonResponse> validateCheckSumfund(String orderId) async {
+  Future<CommonResponse> validateCheckSumfund(String orderId, String fundraiserId) async {
     try {
-      CommonResponse response = await _repository.validateCheckSumfund(orderId);
+      CommonResponse response = await _repository.validateCheckSumfund(orderId, fundraiserId);
       return response;
     } catch (e, s) {
       Completer().completeError(e, s);
@@ -47,12 +45,11 @@ class PaymentRepositoryUser {
         , data: responses);
     return CommonResponse.fromJson(jsonDecode(response.data));
   }
-  Future<CommonResponse> validateCheckSumfund(String orderId) async {
-    print("order id is-------$orderId");
+  Future validateCheckSumfund(String orderId, String fundraiserId) async {
     final response = await apiProvider
         .getInstance()
-        .post('paytm/fundraise-transaction-status'
-        , data: orderId);
-    return CommonResponse.fromJson(jsonDecode(response.data));
+        .post('paytm/fundraiser-transaction-status'
+        , data: {"order_id":orderId, "fundraiser_id": int.parse(fundraiserId)});
+    return response.data;
   }
 }
