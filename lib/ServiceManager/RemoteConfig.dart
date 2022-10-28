@@ -36,6 +36,7 @@ class RemoteConfig {
   static const pancardupload="user/pancardupload";
   static const fetchpancard="user/user-profile-details";
 
+
   // Loan & Lend related
   static const createLend = "loan/create-loan";
   static const updateLend = "loan/update-loan";
