@@ -5,9 +5,7 @@ import 'package:ngo_app/Constants/EnumValues.dart';
 import 'package:ngo_app/Elements/CommonApiErrorWidget.dart';
 import 'package:ngo_app/Elements/CommonApiLoader.dart';
 import 'package:ngo_app/Elements/CommonApiResultsEmptyWidget.dart';
-import 'package:ngo_app/Elements/DonateNowCardFund.dart';
-import 'package:ngo_app/Elements/DonateNowCardW'
-    'idget.dart';
+import 'package:ngo_app/Elements/DonateNowCardWidget.dart';
 import 'package:ngo_app/Elements/EachListItemWidget.dart';
 import 'package:ngo_app/Elements/PainationLoader.dart';
 import 'package:ngo_app/Interfaces/LoadMoreListener.dart';
@@ -15,7 +13,6 @@ import 'package:ngo_app/Models/CommonViewAllResponse.dart';
 import 'package:ngo_app/Models/FundraiserItem.dart';
 import 'package:ngo_app/Screens/DetailPages/ItemDetailScreen.dart';
 import 'package:ngo_app/ServiceManager/ApiResponse.dart';
-
 import '../FilterScreen.dart';
 
 class FundraiserFragment extends StatefulWidget {

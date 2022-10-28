@@ -26,7 +26,6 @@ import 'package:ngo_app/Screens/Sidebar/PartnerRequestScreen.dart';
 import 'package:ngo_app/Screens/Sidebar/PricingScreen.dart';
 import 'package:ngo_app/Screens/Sidebar/VolunteerRequestScreen.dart';
 import 'package:ngo_app/Utilities/LoginModel.dart';
-
 import 'AllCategoriesScreen.dart';
 import 'AutocompleteSearch.dart';
 import 'PointsInfoScreen.dart';

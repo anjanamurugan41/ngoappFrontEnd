@@ -92,7 +92,7 @@ class UserDetails {
     _imageUrl = json['image_url'] ?? "";
     _baseUrl = json['baseUrl'] ?? "";
     _countryCode = json['country_code'];
-    _pancard_image= json['pancrad_image'];
+    _pancard_image= json['pancard_image'];
     _points = json['points'];
   }
 
@@ -107,7 +107,7 @@ class UserDetails {
     data['image_url'] = this._imageUrl;
     data['baseUrl'] = this._baseUrl;
     data['country_code'] = this._countryCode;
-    data['pancrad_image']= this._pancard_image;
+    data['pancard_image']= this._pancard_image;
     data['points'] = this._points;
     return data;
   }

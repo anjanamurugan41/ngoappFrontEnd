@@ -356,11 +356,11 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                     child: Text(
                       "CROWD WORKS INDIA FOUNDATION,ALAMPARAMBIL BUILDING, 13/1013-5,2ND FLOOR, TK ROAD, THIRUVALLA,KERALA, 689101.TOLL FREE: 1800 890 1811TIME: MON - FRI (9:00 - 19:00)",
                       // "330 Bay street, 6th floor, Red cross, United kingdom",
-                      textAlign: TextAlign.justify,
+                      textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                          fontSize: 13.0),
+                          fontSize:11.5),
                     ),
                   ),
                   flex: 1,
