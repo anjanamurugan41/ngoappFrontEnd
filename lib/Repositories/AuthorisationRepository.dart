@@ -5,6 +5,7 @@ import 'package:ngo_app/Models/CommonResponse.dart';
 import 'package:ngo_app/Models/OtpResponse.dart';
 import 'package:ngo_app/Models/PancardUploadResponse.dart';
 import 'package:ngo_app/Models/ProfileResponse.dart';
+import 'package:ngo_app/Models/UserPancardResponse.dart';
 
 import '../Models/LoginResponse.dart';
 import '../ServiceManager/ApiProvider.dart';
@@ -65,6 +66,13 @@ class AuthorisationRepository {
         .post('${RemoteConfig.pancardupload}', data: formData);
     print("->>>>>>>>>>>${response}");
     return PancardResponse.fromJson(response.data);
+  }
+
+  Future<UserPancardResponse> fetchUserRecords(String userId) async {
+    final response = await apiProvider.getInstance().post(
+        '${RemoteConfig.fetchpancard}',
+        data: {"user_id": userId});
+    return UserPancardResponse.fromJson(response.data);
   }
 
 }

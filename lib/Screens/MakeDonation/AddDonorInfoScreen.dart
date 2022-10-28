@@ -236,10 +236,10 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
   void _nextBtnClickFunction() {
     print("_clearBtnClickFunction clicked");
     if (_formKey.currentState.validate()) {
-      paymentInfo.name = _name.trim();
-      paymentInfo.email = _email.trim();
-      paymentInfo.countryCode = _countryCode;
-      paymentInfo.mobile = _phone.trim();
+      // paymentInfo.name = _name.trim();
+      // paymentInfo.email = _email.trim();
+      // paymentInfo.countryCode = _countryCode;
+      // paymentInfo.mobile = _phone.trim();
       paymentInfo.isAnonymous =
       CommonMethods().isAuthTokenExist() ? _isAnonymous : true;
       if (_is80gFormRequired) {

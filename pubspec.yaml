@@ -50,6 +50,7 @@ dependencies:
   badges: ^2.0.1
   flutter_webview_plugin: ^0.4.0
   paytm_allinonesdk: ^1.1.8
+  photo_view: ^0.14.0
 
 
 dev_dependencies:
