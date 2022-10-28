@@ -211,6 +211,7 @@ class CommonInfoRepository {
   }
 
   Future<CommonResponse> createFundraiser(FormData formData) async {
+    print("formdata->>>>>>>${formData.fields}");
     final response = await apiProvider
         .getMultipartInstance()
         .post(RemoteConfig.createFundraiser, data: formData);
