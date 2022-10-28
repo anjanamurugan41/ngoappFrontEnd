@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:ngo_app/Models/CommonResponse.dart';
 import 'package:ngo_app/Models/PancardUploadResponse.dart';
 import 'package:ngo_app/Models/UserDetails.dart';
+import 'package:ngo_app/Models/UserPancardResponse.dart';
 import 'package:ngo_app/Repositories/AuthorisationRepository.dart';
 
 import '../Constants/CommonMethods.dart';
@@ -23,10 +24,20 @@ class PanBloc {
 
   Stream<ApiResponse<PancardResponse>> get pancardStream =>
       _panController.stream;
+
+   StreamController<ApiResponse<UserPancardResponse>>
+  _userRecordsController;
+  StreamSink<ApiResponse<UserPancardResponse>> get userRecordSink =>
+      _userRecordsController.sink;
+  Stream<ApiResponse<UserPancardResponse>> get userRecordStream =>
+      _userRecordsController.stream;
   PanBloc() {
 
     authorisationRepository = AuthorisationRepository();
     _panController = StreamController<ApiResponse<PancardResponse>>();
+    _userRecordsController=StreamController<ApiResponse<UserPancardResponse>>();
+
+    authorisationRepository = AuthorisationRepository ();
   }
 
 
@@ -49,6 +60,23 @@ class PanBloc {
       }
     } catch (error) {
       pancardsink
+          .add(ApiResponse.error(CommonMethods().getNetworkError(error)));
+    }
+  }
+
+  getUserRecords(String  userId) async {
+    userRecordSink.add(ApiResponse.loading('Fetching profile'));
+    try {
+      UserPancardResponse userRecordsResponse =
+      await authorisationRepository.fetchUserRecords(userId);
+      if (userRecordsResponse.statusCode == 200) {
+        userRecordSink.add(ApiResponse.completed(userRecordsResponse));
+      } else {
+        userRecordSink.add(ApiResponse.error(
+            userRecordsResponse.userDetails ?? "Something went wrong"));
+      }
+    } catch (error) {
+      userRecordSink
           .add(ApiResponse.error(CommonMethods().getNetworkError(error)));
     }
   }

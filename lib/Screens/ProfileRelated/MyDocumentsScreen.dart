@@ -23,11 +23,15 @@ import 'package:ngo_app/Elements/PainationLoader.dart';
 import 'package:ngo_app/Interfaces/LoadMoreListener.dart';
 import 'package:ngo_app/Interfaces/RefreshPageListener.dart';
 import 'package:ngo_app/Models/CommonResponse.dart';
+import 'package:ngo_app/Models/PancardUploadResponse.dart';
+import 'package:ngo_app/Models/UserPancardResponse.dart';
 import 'package:ngo_app/Screens/Dashboard/Home.dart';
 import 'package:ngo_app/Screens/Dashboard/ViewAllScreen.dart';
 import 'package:ngo_app/Screens/DetailPages/ItemDetailScreen.dart';
+import 'package:ngo_app/Screens/ProfileRelated/PhotoViewer.dart';
 import 'package:ngo_app/ServiceManager/ApiResponse.dart';
 import 'package:ngo_app/Utilities/LoginModel.dart';
+import 'package:photo_view/photo_view.dart';
 
 class MyDocumentsScreen extends StatefulWidget {
   @override
@@ -35,9 +39,12 @@ class MyDocumentsScreen extends StatefulWidget {
 }
 
 class _MyDocumentsScreenState extends State<MyDocumentsScreen>
-    with LoadMoreListener, RefreshPageListener,  TickerProviderStateMixin, ImagePickerListener {
+    with
+        LoadMoreListener,
+        RefreshPageListener,
+        TickerProviderStateMixin,
+        ImagePickerListener {
   bool isLoadingMore = false;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _documentName = new TextEditingController();
 
   String _imageUrl = "";
@@ -49,11 +56,12 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   File _image;
 
   void initState() {
-      super.initState();
 
-      _controller = new AnimationController(
-        duration: const Duration(milliseconds: 500),
-
+    super.initState();
+    _panbloc = PanBloc();
+    _panbloc.getUserRecords(112.toString());
+    _controller = new AnimationController(
+      duration: const Duration(milliseconds: 500),
 
       vsync: this,
     );
@@ -68,7 +76,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       // initFields();
 
   }
-
 
   @override
   void dispose() {
@@ -112,6 +119,123 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                   //_buildUserWidget(),
 
                     _uploadDocumentWidget(),
+
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Your Pan Card",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  // StreamBuilder(
+                  //   stream: _panbloc.userRecordStream,
+                  //     builder: (context, snapshot) {
+                  //       if (snapshot.hasData) {
+                  //         switch (snapshot.data.status) {
+                  //           case Status.LOADING:
+                  //             return SizedBox(
+                  //               child: CommonApiLoader(),
+                  //             );
+                  //           case Status.COMPLETED:
+                  //             UserPancardResponse resp = snapshot.data.data;
+                  //             return ListView.builder(
+                  //                 physics: NeverScrollableScrollPhysics(),
+                  //                 shrinkWrap: true,
+                  //                 itemCount: 1,
+                  //                 itemBuilder:
+                  //                     (BuildContext context, int index) {
+                  //                   return Card(
+                  //                     color: Colors.grey[200],
+                  //                     margin: EdgeInsets.only(top: 10),
+                  //                     child: Padding(
+                  //                       padding: const EdgeInsets.all(8.0),
+                  //                       child: Column(
+                  //                         crossAxisAlignment: CrossAxisAlignment.start,
+                  //                         children: [
+                  //                           InkWell(
+                  //                             onTap: () {
+                  //                               Get.to(() =>
+                  //                                   Image(
+                  //                                     image: FileImage(File(resp.userDetails.pancard_image)),),);
+                  //                             },
+                  //                             child: ClipRRect(
+                  //                               borderRadius: BorderRadius.circular(5),
+                  //                               child: CachedNetworkImage(
+                  //                                 fit: BoxFit.fitWidth,
+                  //                                 imageUrl:resp.userDetails.pancard_image,
+                  //                                 placeholder: (context, url) =>
+                  //                                     Center(
+                  //                                       child: CircularProgressIndicator(),
+                  //                                     ),
+                  //                                 errorWidget: (context, url, error) =>
+                  //                                     Container(
+                  //                                         margin: EdgeInsets.all(5),
+                  //                                         child: Image(
+                  //                                           image: AssetImage(
+                  //                                               'assets/images/ic_404_error.png'),
+                  //                                         )),
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                         ],
+                  //                       ),
+                  //                     ),
+                  //                   );
+                  //                 });
+                  //           case Status.ERROR:
+                  //             return CommonApiErrorWidget(
+                  //                 snapshot.data.message,
+                  //                 _errorWidgetFunction);
+                  //         }
+                  //       }
+                  //       return SizedBox(
+                  //         height: 30,
+                  //         child: Container(
+                  //           color: Colors.lightBlue,
+                  //         ),
+                  //       );
+                  //     }),
+                    StreamBuilder<ApiResponse<dynamic>>(
+                        stream: _panbloc.userRecordStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            switch (snapshot.data.status) {
+                              case Status.LOADING:
+                                return SizedBox(
+                                  height: 100,
+                                  child: CommonApiLoader(),
+                                );
+                              case Status.COMPLETED:
+                                UserPancardResponse resp = snapshot.data.data;
+                                return (resp.userDetails == null)
+                                    ? Fluttertoast.showToast(msg: "null")
+                                    : ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: 1,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return _buildUserRecords(
+                                          resp.userDetails.pancard_image);
+                                    });
+                              case Status.ERROR:
+                                return Container(color: Colors.red,);
+                            }
+                          }
+                          return SizedBox(
+                            height: 100,
+                            child: CommonApiLoader(),
+                          );
+                        }),
+
                     Visibility(
                       child: PaginationLoader(),
                       visible: isLoadingMore ? true : false,
@@ -129,6 +253,49 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     );
   }
 
+
+  Widget _buildUserRecords( reports) {
+    print("=======>${reports}");
+    return Card(
+      color: Colors.grey[200],
+      margin: EdgeInsets.only(top: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 10,
+            ),
+            InkWell(
+              onTap: () {
+                Get.to(() => PhotoViewer(
+                  image: reports,
+                  networkImage: true,
+                ));
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: CachedNetworkImage(
+                  fit: BoxFit.fitWidth,
+                  imageUrl: reports ?? "",
+                  placeholder: (context, url) => Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                      margin: EdgeInsets.all(5),
+                      child: Image(
+                        image: AssetImage('assets/images/no_data.png'),
+                      )),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _errorWidgetFunction() {
 
     if (_panbloc != null) _panbloc.getpancardinfo(false);
@@ -139,7 +306,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   );
 
   }
-
 
   void _backPressFunction() {
     print("_sendOtpFunction clicked");
@@ -228,8 +394,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
               ),
             ),
             onPressed: () {
-              Get.offAll(() =>
-                  DashboardScreen(
+              Get.offAll(() => DashboardScreen(
                     fragmentToShow: 1,
                   ));
             },
@@ -581,8 +746,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
 
   Future _updateDocument(File reportFile) async {
     try {
-      PancardResponse response =
-      await _panbloc.uploadUserRecords(reportFile);
+      PancardResponse response = await _panbloc.uploadUserRecords(reportFile);
       Get.back();
       print("response==>${response}");
 
@@ -655,123 +819,92 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       return Center(
         child: _image == null
             ? Container(
-          color: Colors.black12,
-          child: CachedNetworkImage(
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-            imageUrl: _imageUrl,
-            placeholder: (context, url) =>
-                Center(
-                  child: RoundedLoader(),
-                ),
-            errorWidget: (context, url, error) =>
-                Container(
-                  child: Image.asset(
-                    ('assets/images/no_image.png'),
-                    fit: BoxFit.fill,
+                color: Colors.black12,
+                child: CachedNetworkImage(
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                  imageUrl: _imageUrl,
+                  placeholder: (context, url) => Center(
+                    child: RoundedLoader(),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    child: Image.asset(
+                      ('assets/images/no_image.png'),
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
-          ),
-          padding: EdgeInsets.all(0),
-        )
+                padding: EdgeInsets.all(0),
+              )
             : Container(
-          height: 180.0,
-          width: double.infinity,
-          child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
-              (BuildContext context, Object exception,
-              StackTrace stackTrace) {
-            return Container(
-              child: Image.asset(
-                ('assets/images/no_image.png'),
-                fit: BoxFit.fill,
+                height: 180.0,
+                width: double.infinity,
+                child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
+                    (BuildContext context, Object exception,
+                        StackTrace stackTrace) {
+                  return Container(
+                    child: Image.asset(
+                      ('assets/images/no_image.png'),
+                      fit: BoxFit.fill,
+                    ),
+                  );
+                }),
+                decoration: BoxDecoration(
+                  color: Colors.cyan[100],
+                  borderRadius:
+                      new BorderRadius.all(const Radius.circular(80.0)),
+                  image: new DecorationImage(
+                      image: new AssetImage('assets/images/no_image.png'),
+                      fit: BoxFit.cover),
+                ),
               ),
-            );
-          }),
-          decoration: BoxDecoration(
-            color: Colors.cyan[100],
-            borderRadius:
-            new BorderRadius.all(const Radius.circular(80.0)),
-            image: new DecorationImage(
-                image: new AssetImage('assets/images/no_image.png'),
-                fit: BoxFit.cover),
-          ),
-        ),
       );
     } else {
       return Center(
         child: _image == null
             ? Container(
-          color: Colors.black12,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Image(
-                  image: AssetImage('assets/images/no_image.png'),
-                  height: double.infinity,
-                  width: double.infinity,
+                color: Colors.black12,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Image(
+                        image: AssetImage('assets/images/no_image.png'),
+                        height: double.infinity,
+                        width: double.infinity,
+                      ),
+                      flex: 1,
+                    ),
+                  ],
                 ),
-                flex: 1,
-              ),
-            ],
-          ),
-          padding: EdgeInsets.all(5),
-        )
+                padding: EdgeInsets.all(5),
+              )
             : Container(
-          height: 190.0,
-          width: double.infinity,
-          child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
-              (BuildContext context, Object exception,
-              StackTrace stackTrace) {
-            return Container(
-              child: Image.asset(
-                ('assets/images/no_image.png'),
-                fit: BoxFit.fill,
+                height: 190.0,
+                width: double.infinity,
+                child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
+                    (BuildContext context, Object exception,
+                        StackTrace stackTrace) {
+                  return Container(
+                    child: Image.asset(
+                      ('assets/images/no_image.png'),
+                      fit: BoxFit.fill,
+                    ),
+                  );
+                }),
+                decoration: BoxDecoration(
+                  color: Colors.cyan[100],
+                  borderRadius:
+                      new BorderRadius.all(const Radius.circular(80.0)),
+                  image: new DecorationImage(
+                      image: new AssetImage('assets/images/no_image.png'),
+                      fit: BoxFit.cover),
+                ),
               ),
-            );
-          }),
-          decoration: BoxDecoration(
-            color: Colors.cyan[100],
-            borderRadius:
-            new BorderRadius.all(const Radius.circular(80.0)),
-            image: new DecorationImage(
-                image: new AssetImage('assets/images/no_image.png'),
-                fit: BoxFit.cover),
-          ),
-        ),
       );
     }
   }
-  Future _updateDocument(String reportName, XFile reportFile) async {
-   // AppDialogs.loading();
-
 
 }
-
-
-    try {
-      CommonResponse response =
-      await _profileBlocUser.uploadUserRecords(reportName, reportFile);
-      Get.back();
-
-      if (response.success!) {
-        toastMessage('${response.message!}');
-        await _profileBlocUser.getUserRecords(User.userId);
-      } else {
-        toastMessage('${response.message!}');
-      }
-    } catch (e, s) {
-      Completer().completeError(e, s);
-      Get.back();
-      toastMessage('Something went wrong. Please try again');
-    }
-  }
-
-
-
-
-
-    }
-
