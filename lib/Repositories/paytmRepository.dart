@@ -30,7 +30,8 @@ class TestRepositoryUser {
           "name": userDetails.name,
           "amount": 1,
           "email": userDetails.email,
-          "phone":userDetails.phoneNumber
+          "phone":userDetails.phoneNumber,
+          "payment_type":"Donation"
        });
     return TestPaymentModel.fromJson(response.data);
   }
@@ -40,6 +41,7 @@ class TestRepositoryUser {
       String amount,
       String email,
       String phone,
+      String paymentype
       ) async {
     final response = await apiProvider.getInstance().post(
         'paytm/initiate',
@@ -47,11 +49,42 @@ class TestRepositoryUser {
           "name": name,
           "amount": amount,
           "email":email,
-          "phone":phone});
+          "phone":phone,
+        "payment_type":"Donation"});
     return TestPaymentModel.fromJson(response.data);
   }
 // return response;
+  Future<TestPaymentModel> registerpayment(int perPage, int page,amount) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString(PreferenceUtils.prefUserDetails) ?? "";
+    userDetails = UserDetails.fromJson(json.decode(data));
+    LoginModel().userDetails = userDetails;
+    final response = await apiProvider.getInstance().post(
+        'paytm/initiate',
+        data: {
+          "id": userDetails.id,
+          "amount":amount,
 
+        });
+    return TestPaymentModel.fromJson(response.data);
+  }
+
+  Future<TestPaymentModel> registerPay(
+      int id,
+      String amount,
+      String donation
+
+      ) async {
+    final response = await apiProvider.getInstance().post(
+        'paytm/initiate',
+        data: {
+          "user_id": id,
+          "amount": amount,
+          "payment_type":donation
+
+          });
+    return TestPaymentModel.fromJson(response.data);
+  }
   Future<TestPaymentModel> FundRaise(
       String name,
       String amount,

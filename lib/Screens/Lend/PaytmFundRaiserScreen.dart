@@ -118,7 +118,7 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
         await _validateCheckSum(value["ORDERID"]);
         setState(() {
           result = value.toString();
-          Text("Payment Succesfully Completed,Check bookings section");
+          Fluttertoast.showToast(msg: "Payment Succesfully Completed,Check bookings section");
         });
 
 
@@ -129,21 +129,21 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
           //AppDialogs.message("Payment failed, Please try again");
           setState(() async {
             result = onError.message + " \n  " + onError.details.toString();
-            Text("Payment failed, Please try again");
+            Fluttertoast.showToast(msg: "Payment failed, Please try again");
             await _validateCheckSum(onError.details["ORDERID"]);
           });
         } else {
           //AppDialogs.message("Payment failed, Please try again");
           setState(() async {
             result = onError.toString();
-            Text("Payment failed, Please try again");
+            Fluttertoast.showToast(msg: "Payment failed, Please try again");
             await _validateCheckSum(onError.details["ORDERID"]);
           });
         }
       });
     } catch (err) {
       result = err.toString();
-      Text("Payment failed, Please try again");
+      Fluttertoast.showToast(msg: "Payment failed, Please try again");
     }
   }
 
@@ -154,11 +154,13 @@ class _PaytmFundRaiserScreenState extends State<PaytmFundRaiserScreen> {
     try {
       CommonResponse response =
           await _paymentBlocUser.validateCheckSumfund(orderId, widget.fundraise_id.toString());
+      print("response----------$response.message");
       Get.back();
       Fluttertoast.showToast(msg: response.message);
+
     } catch (e, s) {
       Completer().completeError(e, s);
-      Get.back();
+     // Get.back();
       Fluttertoast.showToast(msg: 'Something went wrong. Please try again');
     }
   }

@@ -13,6 +13,7 @@ import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
 import 'package:ngo_app/Models/UserDetails.dart';
 import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
+import 'package:ngo_app/Screens/Lend/RegisteredUserPayment.dart';
 import 'package:ngo_app/Screens/MakeDonation/AddDonorInfoScreen.dart';
 import 'package:ngo_app/Utilities/LoginModel.dart';
 import 'package:ngo_app/Utilities/PreferenceUtils.dart';
@@ -23,6 +24,7 @@ class PaymentInputAmountScreen extends StatefulWidget {
   final PaymentType paymentType;
   final int id;
   final int amount;
+
   final bool isCampaignRelated;
   final bool isForNgoTrust;
 
@@ -179,7 +181,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
 
 
         Get.to(() =>
-            PatymPaymentScrenn(name: userDetails.name,email: userDetails.email,phonenumber: userDetails.phoneNumber,amount:1,));
+            RegisterPaymentScrenn(id:userDetails.id,amount:_textEditingController.text,name:userDetails.name,email: userDetails.email,phone: userDetails.phoneNumber,));
       } else {
         //neglect
       }
@@ -388,7 +390,7 @@ class _PaymentInputAmountScreenState extends State<PaymentInputAmountScreen> {
       }
       else {
         print("*******");
-        Get.to(() =>AddDonorInfoScreen());
+        Get.to(() =>AddDonorInfoScreen(amount: _textEditingController.text,));
         print("*******");
 
       }

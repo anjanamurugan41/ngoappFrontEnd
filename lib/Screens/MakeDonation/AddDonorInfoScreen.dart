@@ -14,8 +14,8 @@ import 'package:ngo_app/Screens/Lend/Paytmscreen.dart';
 
 class AddDonorInfoScreen extends StatefulWidget {
   final PaymentInfo paymentInfo;
-
-  const AddDonorInfoScreen({Key key, @required this.paymentInfo})
+final amount ;
+  const AddDonorInfoScreen({Key key, @required this.paymentInfo, this.amount})
       : super(key: key);
 
   @override
@@ -236,12 +236,12 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
   void _nextBtnClickFunction() {
     print("_clearBtnClickFunction clicked");
     if (_formKey.currentState.validate()) {
-      paymentInfo.name = _name.trim();
-      paymentInfo.email = _email.trim();
-      paymentInfo.countryCode = _countryCode;
-      paymentInfo.mobile = _phone.trim();
-      paymentInfo.isAnonymous =
-      CommonMethods().isAuthTokenExist() ? _isAnonymous : true;
+      // paymentInfo.name = _name.trim();
+      // paymentInfo.email = _email.trim();
+      // paymentInfo.countryCode = _countryCode;
+      // paymentInfo.mobile = _phone.trim();
+      // paymentInfo.isAnonymous =
+      // CommonMethods().isAuthTokenExist() ? _isAnonymous : true;
       if (_is80gFormRequired) {
         paymentInfo.form80G = Form80G(
             name: _name.trim(),
@@ -249,11 +249,9 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
             countryCode: _countryCode,
             mobile: _phone.trim());
       }
-print("name->>>>>>${ paymentInfo.name}");
-      Get.to(
-              () => PatymPaymentScrenn(name: paymentInfo.name,email: paymentInfo.email,phonenumber: paymentInfo.mobile,amount: paymentInfo.amount,
 
-          ),
+      Get.to(
+              () => PatymPaymentScrenn(name: _name,email: _email,phonenumber: _phone,amount: widget.amount.toString(),),
           opaque: false,
           fullscreenDialog: true);
     } else {

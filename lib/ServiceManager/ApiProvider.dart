@@ -8,16 +8,9 @@ class ApiProvider {
   ApiProvider() {
     BaseOptions options;
     options = new BaseOptions(
-
- baseUrl: "https://7767-117-221-149-245.in.ngrok.io/NGO-Backend/api/web/v1/",
+      baseUrl: "https://711b-117-193-40-77.in.ngrok.io/NGO-Backend/api/web/v1/",
 
       // baseUrl: "https://www.cocoalabs.in/ngo/api/web/v1/",
-
-  
-
-
- //baseUrl: "https://www.cocoalabs.in/ngo/api/web/v1/",
-
       receiveTimeout: 30000, //30s
       connectTimeout: 30000,
     );

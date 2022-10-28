@@ -20,21 +20,24 @@ import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 import 'PaymentScreen.dart';
 
 
-class PatymPaymentScrenn extends StatefulWidget {
+class RegisterPaymentScrenn extends StatefulWidget {
 
 
-  PatymPaymentScrenn({Key key,  this.name, this.email, this.phonenumber, this.amount, this.paymentInfo}) : super(key: key);
+  RegisterPaymentScrenn({Key key,  this.id, this.amount, this.paymentInfo,this.name,this.email,this.phone}) : super(key: key);
   final PaymentInfo paymentInfo;
-  final email;
-  final phonenumber;
+final name;
+final email;
+final phone;
+
   final amount;
-  final name ;
+  final id;
+
   String amountInPaise = '0';
   @override
-  State<PatymPaymentScrenn> createState() => _PatymPaymentScrennState();
+  State<RegisterPaymentScrenn> createState() => _RegisterPaymentScrennState();
 }
 
-class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
+class _RegisterPaymentScrennState extends State<RegisterPaymentScrenn> {
   BookingsBlocUser _bookingsBlocUser;
   PaymentInfo paymentInfo;
 
@@ -59,20 +62,17 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
     );
   }
   Future _initPayment() async {
-    //  AppDialogs.loading();
-    print("cc->>>>>>>${ widget.amount}");
+
     try {
- TestPaymentModel response = await _bookingsBlocUser
-          .bookAppointment(widget.name,
-            widget.amount,
-            widget.email,
-            widget.phonenumber,
-            "Donation"
+      TestPaymentModel response = await _bookingsBlocUser
+          .RegisterPayment(widget.id,
+        widget.amount.toString(),
+       "Donation"
 
 
       );
       Get.back();
-     print("StartTransaction->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      print("StartTransaction->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
       await _startTransaction(
         response.mid,
         response.order_id,
@@ -108,8 +108,8 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
           restrictAppInvoke);
       response.then((value) async {
         print("value=======>${value}");
-
         await _validateCheckSum(value["ORDERID"]);
+
         setState(() {
           result = value.toString();
           Text("Payment Succesfully Completed,Check bookings section");
@@ -140,9 +140,9 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
   }
 
   PaymentBlocUser _paymentBlocUser = PaymentBlocUser();
-  Future _validateCheckSum(String orderID) async {
+  Future _validateCheckSum(String OrderId) async {
     try {
-      CommonResponse response = await _paymentBlocUser.validateCheckSum(widget.name,widget.email,widget.phonenumber,orderID);
+      CommonResponse response = await _paymentBlocUser.validateCheckSum(widget.name,widget.email,widget.phone,OrderId);
     } catch (e, s) {
       Completer().completeError(e, s);
       //Get.back();
