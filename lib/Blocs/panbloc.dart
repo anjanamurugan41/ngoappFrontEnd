@@ -25,7 +25,7 @@ class PanBloc {
   Stream<ApiResponse<PancardResponse>> get pancardStream =>
       _panController.stream;
 
-   StreamController<ApiResponse<UserPancardResponse>>
+  StreamController<ApiResponse<UserPancardResponse>>
   _userRecordsController;
   StreamSink<ApiResponse<UserPancardResponse>> get userRecordSink =>
       _userRecordsController.sink;
@@ -82,7 +82,7 @@ class PanBloc {
   }
 
   Future<PancardResponse> uploadUserRecords(
-     File reportFile) async {
+      File reportFile) async {
     try {
       PancardResponse response =
       (await authorisationRepository.pancardupload(reportFile));

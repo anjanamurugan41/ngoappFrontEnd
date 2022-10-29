@@ -10,9 +10,9 @@ class PaymentBlocUser {
     _repository = PaymentRepositoryUser();
   }
 
-  Future<CommonResponse> validateCheckSum(Map body) async {
+  Future<CommonResponse> validateCheckSum(String name,email,phone,orderid) async {
     try {
-      CommonResponse response = await _repository.validateCheckSum(body);
+      CommonResponse response = await _repository.validateCheckSum(name,email,phone,orderid);
       return response;
     } catch (e, s) {
       Completer().completeError(e, s);
@@ -38,11 +38,11 @@ class PaymentRepositoryUser {
     apiProvider = new ApiProvider();
   }
 
-  Future<CommonResponse> validateCheckSum(Map responses) async {
+  Future<CommonResponse> validateCheckSum(String name ,email,phone,orderid) async {
     final response = await apiProvider
         .getInstance()
         .post('paytm/transactionstatus'
-        , data: responses);
+        , data: {"name":name,"email":email,"phone":phone,"payment_type":"Donation","order_id":orderid});
     return CommonResponse.fromJson(jsonDecode(response.data));
   }
   Future validateCheckSumfund(String orderId, String fundraiserId) async {

@@ -35,12 +35,9 @@ class RemoteConfig {
   static const cancelFundraiser = "report-issue/cancel-fundraiser";
   static const pancardupload="user/pancardupload";
   static const fetchpancard="user/user-profile-details";
-
-
   // Loan & Lend related
   static const createLend = "loan/create-loan";
   static const updateLend = "loan/update-loan";
-
   static const getPointsInfo = "master/point";
   static const removeSubscription = "razorpay/cancel-subscription";
 

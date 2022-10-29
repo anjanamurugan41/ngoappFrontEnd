@@ -1,23 +1,20 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
+import 'package:ngo_app/Blocs/panbloc.dart';
 import 'package:ngo_app/Constants/CommonMethods.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Constants/EnumValues.dart';
-import 'package:ngo_app/Constants/StringConstants.dart';
 import 'package:ngo_app/CustomLibraries/CustomLoader/RoundedLoader.dart';
 import 'package:ngo_app/CustomLibraries/ImagePickerAndCropper/image_picker_handler.dart';
-import 'package:ngo_app/CustomLibraries/TextDrawable/TextDrawableWidget.dart';
-import 'package:ngo_app/CustomLibraries/TextDrawable/color_generator.dart';
 import 'package:ngo_app/Elements/CommonApiErrorWidget.dart';
 import 'package:ngo_app/Elements/CommonApiLoader.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
-import 'package:ngo_app/Elements/CommonTextFormField.dart';
 import 'package:ngo_app/Elements/EachListItemWidget.dart';
 import 'package:ngo_app/Elements/PainationLoader.dart';
 import 'package:ngo_app/Interfaces/LoadMoreListener.dart';
@@ -46,7 +43,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
         ImagePickerListener {
   bool isLoadingMore = false;
   TextEditingController _documentName = new TextEditingController();
-
+  PanBloc _panbloc;
   String _imageUrl = "";
   ImagePickerHandler imagePicker;
   AnimationController _controller;
@@ -56,25 +53,16 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   File _image;
 
   void initState() {
-
     super.initState();
     _panbloc = PanBloc();
     _panbloc.getUserRecords(112.toString());
     _controller = new AnimationController(
       duration: const Duration(milliseconds: 500),
-
       vsync: this,
     );
     imagePicker = new ImagePickerHandler(this, _controller);
     imagePicker.init();
     // initFields();
-
-        vsync: this,
-      );
-      imagePicker = new ImagePickerHandler(this,_controller);
-      imagePicker.init();
-      // initFields();
-
   }
 
   @override
@@ -110,16 +98,11 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-
                     _buildMessageSection(),
                     SizedBox(
                       height: 20,
                     ),
-
-                  //_buildUserWidget(),
-
                     _uploadDocumentWidget(),
-
                     SizedBox(
                       height: 20,
                     ),
@@ -135,74 +118,76 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                     SizedBox(
                       height: 10,
                     ),
-                  // StreamBuilder(
-                  //   stream: _panbloc.userRecordStream,
-                  //     builder: (context, snapshot) {
-                  //       if (snapshot.hasData) {
-                  //         switch (snapshot.data.status) {
-                  //           case Status.LOADING:
-                  //             return SizedBox(
-                  //               child: CommonApiLoader(),
-                  //             );
-                  //           case Status.COMPLETED:
-                  //             UserPancardResponse resp = snapshot.data.data;
-                  //             return ListView.builder(
-                  //                 physics: NeverScrollableScrollPhysics(),
-                  //                 shrinkWrap: true,
-                  //                 itemCount: 1,
-                  //                 itemBuilder:
-                  //                     (BuildContext context, int index) {
-                  //                   return Card(
-                  //                     color: Colors.grey[200],
-                  //                     margin: EdgeInsets.only(top: 10),
-                  //                     child: Padding(
-                  //                       padding: const EdgeInsets.all(8.0),
-                  //                       child: Column(
-                  //                         crossAxisAlignment: CrossAxisAlignment.start,
-                  //                         children: [
-                  //                           InkWell(
-                  //                             onTap: () {
-                  //                               Get.to(() =>
-                  //                                   Image(
-                  //                                     image: FileImage(File(resp.userDetails.pancard_image)),),);
-                  //                             },
-                  //                             child: ClipRRect(
-                  //                               borderRadius: BorderRadius.circular(5),
-                  //                               child: CachedNetworkImage(
-                  //                                 fit: BoxFit.fitWidth,
-                  //                                 imageUrl:resp.userDetails.pancard_image,
-                  //                                 placeholder: (context, url) =>
-                  //                                     Center(
-                  //                                       child: CircularProgressIndicator(),
-                  //                                     ),
-                  //                                 errorWidget: (context, url, error) =>
-                  //                                     Container(
-                  //                                         margin: EdgeInsets.all(5),
-                  //                                         child: Image(
-                  //                                           image: AssetImage(
-                  //                                               'assets/images/ic_404_error.png'),
-                  //                                         )),
-                  //                               ),
-                  //                             ),
-                  //                           ),
-                  //                         ],
-                  //                       ),
-                  //                     ),
-                  //                   );
-                  //                 });
-                  //           case Status.ERROR:
-                  //             return CommonApiErrorWidget(
-                  //                 snapshot.data.message,
-                  //                 _errorWidgetFunction);
-                  //         }
-                  //       }
-                  //       return SizedBox(
-                  //         height: 30,
-                  //         child: Container(
-                  //           color: Colors.lightBlue,
-                  //         ),
-                  //       );
-                  //     }),
+
+                    // StreamBuilder(
+                    //   stream: _panbloc.userRecordStream,
+                    //     builder: (context, snapshot) {
+                    //       if (snapshot.hasData) {
+                    //         switch (snapshot.data.status) {
+                    //           case Status.LOADING:
+                    //             return SizedBox(
+                    //               child: CommonApiLoader(),
+                    //             );
+                    //           case Status.COMPLETED:
+                    //             UserPancardResponse resp = snapshot.data.data;
+                    //             return ListView.builder(
+                    //                 physics: NeverScrollableScrollPhysics(),
+                    //                 shrinkWrap: true,
+                    //                 itemCount: 1,
+                    //                 itemBuilder:
+                    //                     (BuildContext context, int index) {
+                    //                   return Card(
+                    //                     color: Colors.grey[200],
+                    //                     margin: EdgeInsets.only(top: 10),
+                    //                     child: Padding(
+                    //                       padding: const EdgeInsets.all(8.0),
+                    //                       child: Column(
+                    //                         crossAxisAlignment: CrossAxisAlignment.start,
+                    //                         children: [
+                    //                           InkWell(
+                    //                             onTap: () {
+                    //                               Get.to(() =>
+                    //                                   Image(
+                    //                                     image: FileImage(File(resp.userDetails.pancard_image)),),);
+                    //                             },
+                    //                             child: ClipRRect(
+                    //                               borderRadius: BorderRadius.circular(5),
+                    //                               child: CachedNetworkImage(
+                    //                                 fit: BoxFit.fitWidth,
+                    //                                 imageUrl:resp.userDetails.pancard_image,
+                    //                                 placeholder: (context, url) =>
+                    //                                     Center(
+                    //                                       child: CircularProgressIndicator(),
+                    //                                     ),
+                    //                                 errorWidget: (context, url, error) =>
+                    //                                     Container(
+                    //                                         margin: EdgeInsets.all(5),
+                    //                                         child: Image(
+                    //                                           image: AssetImage(
+                    //                                               'assets/images/ic_404_error.png'),
+                    //                                         )),
+                    //                               ),
+                    //                             ),
+                    //                           ),
+                    //                         ],
+                    //                       ),
+                    //                     ),
+                    //                   );
+                    //                 });
+                    //           case Status.ERROR:
+                    //             return CommonApiErrorWidget(
+                    //                 snapshot.data.message,
+                    //                 _errorWidgetFunction);
+                    //         }
+                    //       }
+                    //       return SizedBox(
+                    //         height: 30,
+                    //         child: Container(
+                    //           color: Colors.lightBlue,
+                    //         ),
+                    //       );
+                    //     }),
+
                     StreamBuilder<ApiResponse<dynamic>>(
                         stream: _panbloc.userRecordStream,
                         builder: (context, snapshot) {
@@ -218,16 +203,18 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                                 return (resp.userDetails == null)
                                     ? Fluttertoast.showToast(msg: "null")
                                     : ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: 1,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return _buildUserRecords(
-                                          resp.userDetails.pancard_image);
-                                    });
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: 1,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return _buildUserRecords(
+                                              resp.userDetails.pancard_image);
+                                        });
                               case Status.ERROR:
-                                return Container(color: Colors.red,);
+                                return Container(
+                                  color: Colors.red,
+                                );
                             }
                           }
                           return SizedBox(
@@ -235,7 +222,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                             child: CommonApiLoader(),
                           );
                         }),
-
                     Visibility(
                       child: PaginationLoader(),
                       visible: isLoadingMore ? true : false,
@@ -243,8 +229,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                   ],
                 ),
               )),
-          floatingActionButton:
-          Padding(
+          floatingActionButton: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: CommonWidgets().showHelpDesk(),
           ),
@@ -253,8 +238,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     );
   }
 
-
-  Widget _buildUserRecords( reports) {
+  Widget _buildUserRecords(reports) {
     print("=======>${reports}");
     return Card(
       color: Colors.grey[200],
@@ -270,9 +254,9 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
             InkWell(
               onTap: () {
                 Get.to(() => PhotoViewer(
-                  image: reports,
-                  networkImage: true,
-                ));
+                      image: reports,
+                      networkImage: true,
+                    ));
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
@@ -297,14 +281,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   }
 
   void _errorWidgetFunction() {
-
     if (_panbloc != null) _panbloc.getpancardinfo(false);
-
-    // if (_commentsBloc != null) _commentsBloc.getAllComments(false, null);
-  Container(
-    child: Text("Hai"),
-  );
-
   }
 
   void _backPressFunction() {
@@ -325,7 +302,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       print(isLoadingMore);
     }
   }
-
 
   _buildMessageSection() {
     return Container(
@@ -413,93 +389,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     );
   }
 
-  // _buildMessageSection() {
-  //   return Container(
-  //     alignment: FractionalOffset.center,
-  //     padding: EdgeInsets.fromLTRB(0, 15, 0, 10),
-  //     margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-  //     decoration: BoxDecoration(
-  //         color: Color(colorCoderRedBg),
-  //         borderRadius: BorderRadius.only(
-  //             topLeft: Radius.circular(15),
-  //             topRight: Radius.circular(15),
-  //             bottomLeft: Radius.circular(15),
-  //             bottomRight: Radius.circular(15)),
-  //         boxShadow: [
-  //           BoxShadow(
-  //             color: Colors.grey.withOpacity(0.2),
-  //             spreadRadius: 3,
-  //             blurRadius: 4,
-  //             offset: Offset(0, 2), // changes position of shadow
-  //           ),
-  //         ]),
-  //     child: Column(
-  //       mainAxisSize: MainAxisSize.min,
-  //       mainAxisAlignment: MainAxisAlignment.start,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: <Widget>[
-  //         Container(
-  //           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-  //           alignment: FractionalOffset.center,
-  //           child: Text(
-  //             "Want to be the cool kind on the block?",
-  //             maxLines: 2,
-  //             textAlign: TextAlign.center,
-  //             overflow: TextOverflow.ellipsis,
-  //             style: TextStyle(
-  //                 color: Colors.white,
-  //                 fontWeight: FontWeight.w600,
-  //                 fontSize: 12.0),
-  //           ),
-  //         ),
-  //         Container(
-  //           padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-  //           alignment: FractionalOffset.center,
-  //           child: Text(
-  //             "Check out our latest fundraisers",
-  //             maxLines: 2,
-  //             textAlign: TextAlign.center,
-  //             overflow: TextOverflow.ellipsis,
-  //             style: TextStyle(
-  //                 color: Colors.white,
-  //                 fontWeight: FontWeight.w500,
-  //                 fontSize: 11.0),
-  //           ),
-  //         ),
-  //         ElevatedButton(
-  //           style: ElevatedButton.styleFrom(
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: new BorderRadius.circular(10.0),
-  //             ),
-  //             primary: Colors.white,
-  //             elevation: 0.0,
-  //             padding: EdgeInsets.fromLTRB(15, 3, 15, 3),
-  //             side: BorderSide(
-  //               width: 2.0,
-  //               color: Colors.transparent,
-  //             ),
-  //           ),
-  //           onPressed: () {
-  //             Get.offAll(() => DashboardScreen(
-  //               fragmentToShow: 1,
-  //             ));
-  //           },
-  //           child: Text(
-  //             "Browse fundraisers",
-  //             textAlign: TextAlign.center,
-  //             style: TextStyle(
-  //                 color: Color(colorCoderRedBg),
-  //                 fontSize: 14,
-  //                 fontFamily: 'roboto',
-  //                 fontWeight: FontWeight.w600),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-
   @override
   userImage(File _image) {
     if (_image != null) {
@@ -522,7 +411,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   }
 
   Widget _uploadDocumentWidget() {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -561,188 +449,90 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
               },
               buttonText: "Upload",
             ),
-
-    var _blankFocusNode = new FocusNode();
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        FocusScope.of(context).requestFocus(_blankFocusNode);
-      },
-      child: Container(
-        child: Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height * .01),
-              Center(
-                child: Text(
-                  "Upload Documents",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-              ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * .03),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-                child: Text(
-                  "Document Name",
-                  style: TextStyle(color: Color(colorCodeBlack), fontWeight: FontWeight.w600),
-                ),
-              ),
-              Padding(
-                child: CommonTextFormField(
-                    hintText: "Document Name",
-                    maxLinesReceived: 1,
-                    maxLengthReceived: 150,
-                    controller: _documentName,
-                    textColorReceived: Color(colorCodeBlack),
-                    fillColorReceived: Colors.black12,
-                    hintColorReceived: Colors.black87,
-                    borderColorReceived: Color(colorCoderBorderWhite),
-                    onChanged: (val) => _documentName = val,
-                    validator: CommonMethods().nameValidator),
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-              ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * .01),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-                child: Text(
-                  "Document Image",
-                  style: TextStyle(color: Color(colorCodeBlack), fontWeight: FontWeight.w600),
-                ),
-              ),
-              _buildImageSection(),
-              Container(
-                height: 50.0,
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
-                child: CommonButton(
-                    buttonText: "Upload",
-                    bgColorReceived: Color(colorCoderRedBg),
-                    borderColorReceived: Color(colorCoderRedBg),
-                    textColorReceived: Color(colorCodeWhite),
-                    buttonHandler:_nextBtnClickFunction),
-              ),
-            ],
           ),
         ),
-      ),
+        SizedBox(
+          height: 10,
+        ),
+      ],
     );
   }
-  void _nextBtnClickFunction() {
-    print("_clearBtnClickFunction clicked");
-      if (_formKey.currentState.validate()) {
-        FocusScope.of(context).requestFocus(FocusNode());
-
 
   _showdocumentsectin() {
-    return StreamBuilder(
-
-        if (_image != null) {
-          // LoginModel().userDetails["_imageUrl"] = _image;
-        }
-         LoginModel().startFundraiserMap["patient_name"] = _documentName.text.trim();
-        Fluttertoast.showToast(msg: "SuccessFully Uploaded");
-        // Get.to(() => );
-      } else {
-        Fluttertoast.showToast(msg: StringConstants.formValidationMsg);
-        return;
-    }
-
-  }
-  _showdocumentsectin(){
-    return  StreamBuilder(
-
-        builder: (context, snapshot) {
-          // stream: _profileBlocUser.userRecordStream,
-          if (snapshot.hasData) {
-            switch (snapshot.data.status) {
-              case Status.LOADING:
-                return SizedBox(
-                  child: CommonApiLoader(),
-                );
-              case Status.COMPLETED:
-                return ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: 2,
-                    itemBuilder:
-                        (BuildContext context, int index) {
-                      return Card(
-                        color: Colors.grey[200],
-                        margin: EdgeInsets.only(top: 10),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                               _documentName.text,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Get.to(() =>
-
-                                      Image(
-                                        image: FileImage(File(_image.path)),),);
-
-                                    Image(image: FileImage(File(_image.path)),),);
-                                    // Image.asset(
-                                    //   "$_image",fit: BoxFit.cover,
-                                    //   ),),
-
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child: CachedNetworkImage(
-                                    fit: BoxFit.fitWidth,
-                                    imageUrl: _imageUrl,
-                                    placeholder: (context, url) =>
-                                        Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                    errorWidget: (context, url, error) =>
-                                        Container(
-                                            margin: EdgeInsets.all(5),
-                                            child: Image(
-                                              image: AssetImage(
-                                                  'assets/images/ic_404_error.png'),
-                                            )),
-                                  ),
-                                ),
-                              ),
-                            ],
+    return StreamBuilder(builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        switch (snapshot.data.status) {
+          case Status.LOADING:
+            return SizedBox(
+              child: CommonApiLoader(),
+            );
+          case Status.COMPLETED:
+            return ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: 2,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                    color: Colors.grey[200],
+                    margin: EdgeInsets.only(top: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _documentName.text,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                      );
-                    });
-              case Status.ERROR:
-                return CommonApiErrorWidget(
-                    snapshot.data.message,
-                    _errorWidgetFunction);
-            }
-          }
-          return SizedBox(
-            height: 30,
-            child: Container(
-              color: Colors.lightBlue,
-            ),
-          );
-        });
+                          SizedBox(
+                            height: 10,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Get.to(() => Image(
+                                    image: FileImage(File(_image.path)),
+                                  ));
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: CachedNetworkImage(
+                                fit: BoxFit.fitWidth,
+                                imageUrl: _imageUrl,
+                                placeholder: (context, url) => Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                                errorWidget: (context, url, error) => Container(
+                                    margin: EdgeInsets.all(5),
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/images/ic_404_error.png'),
+                                    )),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                });
+          case Status.ERROR:
+            return CommonApiErrorWidget(
+                snapshot.data.message, _errorWidgetFunction);
+        }
+      }
+      return SizedBox(
+        height: 30,
+        child: Container(
+          color: Colors.lightBlue,
+        ),
+      );
+    });
   }
-
 
   Future _updateDocument(File reportFile) async {
     try {
@@ -761,7 +551,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       Fluttertoast.showToast(msg: "Something went wrong. Please try again");
     }
   }
-
 
   _buildImageSection() {
     return Container(
@@ -812,7 +601,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       ),
     );
   }
-
 
   Widget showImage() {
     if (LoginModel().isFundraiserEditMode) {
@@ -906,5 +694,4 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       );
     }
   }
-
 }
