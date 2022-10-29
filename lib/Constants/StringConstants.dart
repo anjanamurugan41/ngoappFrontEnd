@@ -50,4 +50,7 @@ To prevent fake charity approaches who take advantage of the emergency situation
 To attract volunteers who are passionate about helping the indigent irrespective of any profit and gain. 
 To transform rural communities to better living condition. 
        ''';
+
+
+  static const String fundInfo = "Let us assume an individual,unfortunately,meets with an accident on the road. His medical expenses and hospital bills start piling up. Now he needs ₹5 Lakh to pay his expensive medical bills. Fortunately, his best friend signed up on Ketto’s crowdfunding platform, completed the process of submitting valid documents needed for verification. In a few minutes, he created a crowdfunding campaign to raise funds for his friend’s medical expenses. Now, this campaign can be shared with all his near and dear ones through WhatsApp, Instagram, Twitter,Facebook and E-mail. In a matter of few minutes, funds start coming in to support the financial needs of the injured friend";
 }
