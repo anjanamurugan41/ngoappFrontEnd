@@ -118,6 +118,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                     SizedBox(
                       height: 10,
                     ),
+
                     // StreamBuilder(
                     //   stream: _panbloc.userRecordStream,
                     //     builder: (context, snapshot) {
@@ -186,6 +187,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                     //         ),
                     //       );
                     //     }),
+
                     StreamBuilder<ApiResponse<dynamic>>(
                         stream: _panbloc.userRecordStream,
                         builder: (context, snapshot) {
@@ -547,72 +549,74 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
           padding: EdgeInsets.all(0),
         )
             : Container(
-          height: 180.0,
-          width: double.infinity,
-          child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
-              (BuildContext context, Object exception,
-              StackTrace stackTrace) {
-            return Container(
-              child: Image.asset(
-                ('assets/images/no_image.png'),
-                fit: BoxFit.fill,
+                height: 180.0,
+                width: double.infinity,
+                child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
+                    (BuildContext context, Object exception,
+                        StackTrace stackTrace) {
+                  return Container(
+                    child: Image.asset(
+                      ('assets/images/no_image.png'),
+                      fit: BoxFit.fill,
+                    ),
+                  );
+                }),
+                decoration: BoxDecoration(
+                  color: Colors.cyan[100],
+                  borderRadius:
+                      new BorderRadius.all(const Radius.circular(80.0)),
+                  image: new DecorationImage(
+                      image: new AssetImage('assets/images/no_image.png'),
+                      fit: BoxFit.cover),
+                ),
               ),
-            );
-          }),
-          decoration: BoxDecoration(
-            color: Colors.cyan[100],
-            borderRadius:
-            new BorderRadius.all(const Radius.circular(80.0)),
-            image: new DecorationImage(
-                image: new AssetImage('assets/images/no_image.png'),
-                fit: BoxFit.cover),
-          ),
-        ),
       );
     } else {
       return Center(
         child: _image == null
             ? Container(
-          color: Colors.black12,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Image(
-                  image: AssetImage('assets/images/no_image.png'),
-                  height: double.infinity,
-                  width: double.infinity,
+                color: Colors.black12,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Image(
+                        image: AssetImage('assets/images/no_image.png'),
+                        height: double.infinity,
+                        width: double.infinity,
+                      ),
+                      flex: 1,
+                    ),
+                  ],
                 ),
-                flex: 1,
-              ),
-            ],
-          ),
-          padding: EdgeInsets.all(5),
-        )
+                padding: EdgeInsets.all(5),
+              )
             : Container(
-          height: 190.0,
-          width: double.infinity,
-          child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
-              (BuildContext context, Object exception,
-              StackTrace stackTrace) {
-            return Container(
-              child: Image.asset(
-                ('assets/images/no_image.png'),
-                fit: BoxFit.fill,
+                height: 190.0,
+                width: double.infinity,
+                child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
+                    (BuildContext context, Object exception,
+                        StackTrace stackTrace) {
+                  return Container(
+                    child: Image.asset(
+                      ('assets/images/no_image.png'),
+                      fit: BoxFit.fill,
+                    ),
+                  );
+                }),
+                decoration: BoxDecoration(
+                  color: Colors.cyan[100],
+                  borderRadius:
+                      new BorderRadius.all(const Radius.circular(80.0)),
+                  image: new DecorationImage(
+                      image: new AssetImage('assets/images/no_image.png'),
+                      fit: BoxFit.cover),
+                ),
               ),
-            );
-          }),
-          decoration: BoxDecoration(
-            color: Colors.cyan[100],
-            borderRadius:
-            new BorderRadius.all(const Radius.circular(80.0)),
-            image: new DecorationImage(
-                image: new AssetImage('assets/images/no_image.png'),
-                fit: BoxFit.cover),
-          ),
-        ),
       );
     }
   }
+
 }
+

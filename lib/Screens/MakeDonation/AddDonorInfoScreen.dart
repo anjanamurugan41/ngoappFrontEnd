@@ -242,6 +242,7 @@ class _AddDonorInfoScreenState extends State<AddDonorInfoScreen> {
       // paymentInfo.mobile = _phone.trim();
       // paymentInfo.isAnonymous =
       // CommonMethods().isAuthTokenExist() ? _isAnonymous : true;
+
       if (_is80gFormRequired) {
         paymentInfo.form80G = Form80G(
             name: _name.trim(),
