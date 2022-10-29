@@ -40,9 +40,10 @@ class BookingsBlocUser {
 
   Future<TestPaymentModel> bookAppointment(
       String name,
-       int amount,
+       String amount,
       String email,
       String phone,
+      String paymentType
 
       ) async {
     try {
@@ -53,6 +54,7 @@ class BookingsBlocUser {
         amount.toString(),
         email,
        phone,
+        paymentType
 
       );
       return response;
@@ -61,6 +63,31 @@ class BookingsBlocUser {
       throw e;
     }
   }
+
+  Future<TestPaymentModel> RegisterPayment(
+      int id,
+      String amount,
+      String payment_type
+
+
+      ) async {
+    try {
+
+      TestPaymentModel response =
+      await _bookingRepository.registerPay(
+        id,
+        amount.toString(),
+        payment_type
+
+
+      );
+      return response;
+    } catch (e, s) {
+      Completer().completeError(e, s);
+      throw e;
+    }
+  }
+
 
   Future<TestPaymentModel> FundRaiser(
       String name,

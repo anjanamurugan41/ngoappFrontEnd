@@ -118,74 +118,76 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                     SizedBox(
                       height: 10,
                     ),
-                  // StreamBuilder(
-                  //   stream: _panbloc.userRecordStream,
-                  //     builder: (context, snapshot) {
-                  //       if (snapshot.hasData) {
-                  //         switch (snapshot.data.status) {
-                  //           case Status.LOADING:
-                  //             return SizedBox(
-                  //               child: CommonApiLoader(),
-                  //             );
-                  //           case Status.COMPLETED:
-                  //             UserPancardResponse resp = snapshot.data.data;
-                  //             return ListView.builder(
-                  //                 physics: NeverScrollableScrollPhysics(),
-                  //                 shrinkWrap: true,
-                  //                 itemCount: 1,
-                  //                 itemBuilder:
-                  //                     (BuildContext context, int index) {
-                  //                   return Card(
-                  //                     color: Colors.grey[200],
-                  //                     margin: EdgeInsets.only(top: 10),
-                  //                     child: Padding(
-                  //                       padding: const EdgeInsets.all(8.0),
-                  //                       child: Column(
-                  //                         crossAxisAlignment: CrossAxisAlignment.start,
-                  //                         children: [
-                  //                           InkWell(
-                  //                             onTap: () {
-                  //                               Get.to(() =>
-                  //                                   Image(
-                  //                                     image: FileImage(File(resp.userDetails.pancard_image)),),);
-                  //                             },
-                  //                             child: ClipRRect(
-                  //                               borderRadius: BorderRadius.circular(5),
-                  //                               child: CachedNetworkImage(
-                  //                                 fit: BoxFit.fitWidth,
-                  //                                 imageUrl:resp.userDetails.pancard_image,
-                  //                                 placeholder: (context, url) =>
-                  //                                     Center(
-                  //                                       child: CircularProgressIndicator(),
-                  //                                     ),
-                  //                                 errorWidget: (context, url, error) =>
-                  //                                     Container(
-                  //                                         margin: EdgeInsets.all(5),
-                  //                                         child: Image(
-                  //                                           image: AssetImage(
-                  //                                               'assets/images/ic_404_error.png'),
-                  //                                         )),
-                  //                               ),
-                  //                             ),
-                  //                           ),
-                  //                         ],
-                  //                       ),
-                  //                     ),
-                  //                   );
-                  //                 });
-                  //           case Status.ERROR:
-                  //             return CommonApiErrorWidget(
-                  //                 snapshot.data.message,
-                  //                 _errorWidgetFunction);
-                  //         }
-                  //       }
-                  //       return SizedBox(
-                  //         height: 30,
-                  //         child: Container(
-                  //           color: Colors.lightBlue,
-                  //         ),
-                  //       );
-                  //     }),
+
+                    // StreamBuilder(
+                    //   stream: _panbloc.userRecordStream,
+                    //     builder: (context, snapshot) {
+                    //       if (snapshot.hasData) {
+                    //         switch (snapshot.data.status) {
+                    //           case Status.LOADING:
+                    //             return SizedBox(
+                    //               child: CommonApiLoader(),
+                    //             );
+                    //           case Status.COMPLETED:
+                    //             UserPancardResponse resp = snapshot.data.data;
+                    //             return ListView.builder(
+                    //                 physics: NeverScrollableScrollPhysics(),
+                    //                 shrinkWrap: true,
+                    //                 itemCount: 1,
+                    //                 itemBuilder:
+                    //                     (BuildContext context, int index) {
+                    //                   return Card(
+                    //                     color: Colors.grey[200],
+                    //                     margin: EdgeInsets.only(top: 10),
+                    //                     child: Padding(
+                    //                       padding: const EdgeInsets.all(8.0),
+                    //                       child: Column(
+                    //                         crossAxisAlignment: CrossAxisAlignment.start,
+                    //                         children: [
+                    //                           InkWell(
+                    //                             onTap: () {
+                    //                               Get.to(() =>
+                    //                                   Image(
+                    //                                     image: FileImage(File(resp.userDetails.pancard_image)),),);
+                    //                             },
+                    //                             child: ClipRRect(
+                    //                               borderRadius: BorderRadius.circular(5),
+                    //                               child: CachedNetworkImage(
+                    //                                 fit: BoxFit.fitWidth,
+                    //                                 imageUrl:resp.userDetails.pancard_image,
+                    //                                 placeholder: (context, url) =>
+                    //                                     Center(
+                    //                                       child: CircularProgressIndicator(),
+                    //                                     ),
+                    //                                 errorWidget: (context, url, error) =>
+                    //                                     Container(
+                    //                                         margin: EdgeInsets.all(5),
+                    //                                         child: Image(
+                    //                                           image: AssetImage(
+                    //                                               'assets/images/ic_404_error.png'),
+                    //                                         )),
+                    //                               ),
+                    //                             ),
+                    //                           ),
+                    //                         ],
+                    //                       ),
+                    //                     ),
+                    //                   );
+                    //                 });
+                    //           case Status.ERROR:
+                    //             return CommonApiErrorWidget(
+                    //                 snapshot.data.message,
+                    //                 _errorWidgetFunction);
+                    //         }
+                    //       }
+                    //       return SizedBox(
+                    //         height: 30,
+                    //         child: Container(
+                    //           color: Colors.lightBlue,
+                    //         ),
+                    //       );
+                    //     }),
+
                     StreamBuilder<ApiResponse<dynamic>>(
                         stream: _panbloc.userRecordStream,
                         builder: (context, snapshot) {
@@ -368,8 +370,8 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
             ),
             onPressed: () {
               Get.offAll(() => DashboardScreen(
-                    fragmentToShow: 1,
-                  ));
+                fragmentToShow: 1,
+              ));
             },
             child: Text(
               "Browse fundraisers",
@@ -528,24 +530,24 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       return Center(
         child: _image == null
             ? Container(
-                color: Colors.black12,
-                child: CachedNetworkImage(
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                  imageUrl: _imageUrl,
-                  placeholder: (context, url) => Center(
-                    child: RoundedLoader(),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    child: Image.asset(
-                      ('assets/images/no_image.png'),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-                padding: EdgeInsets.all(0),
-              )
+          color: Colors.black12,
+          child: CachedNetworkImage(
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+            imageUrl: _imageUrl,
+            placeholder: (context, url) => Center(
+              child: RoundedLoader(),
+            ),
+            errorWidget: (context, url, error) => Container(
+              child: Image.asset(
+                ('assets/images/no_image.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          padding: EdgeInsets.all(0),
+        )
             : Container(
                 height: 180.0,
                 width: double.infinity,
@@ -615,4 +617,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       );
     }
   }
+
 }
+
