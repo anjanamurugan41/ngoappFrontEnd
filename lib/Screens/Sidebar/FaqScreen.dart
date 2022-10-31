@@ -1,57 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:ngo_app/Blocs/FaqBloc.dart';
-import 'package:ngo_app/Elements/CommonApiErrorWidget.dart';
-import 'package:ngo_app/Elements/CommonApiLoader.dart';
+import 'package:ngo_app/Constants/CustomColorCodes.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
-import 'package:ngo_app/Interfaces/LoadMoreListener.dart';
-import 'package:ngo_app/Models/FaqResponse.dart';
-import 'package:ngo_app/ServiceManager/ApiResponse.dart';
-import 'package:ngo_app/Elements/PainationLoader.dart';
+import 'package:ngo_app/Screens/Sidebar/Fragments/FundScreen.dart';
+import 'package:ngo_app/Screens/Sidebar/Fragments/HowItScreen.dart';
+import 'package:ngo_app/Screens/Sidebar/Fragments/StepsScreen.dart';
 
 class FaqScreen extends StatefulWidget {
+  final int fragmentToShow;
+  FaqScreen({Key key, @required this.fragmentToShow}) : super(key: key);
   @override
   _FaqScreenState createState() => _FaqScreenState();
 }
 
-class _FaqScreenState extends State<FaqScreen> with LoadMoreListener {
-  bool isLoadingMore = false;
-  ScrollController _itemsScrollController;
-  FaqBloc _faqBloc;
+class _FaqScreenState extends State<FaqScreen> with SingleTickerProviderStateMixin {
+  var selectedTabPos = 0;
+  TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _itemsScrollController = ScrollController();
-    _itemsScrollController.addListener(_scrollListener);
-    _faqBloc = new FaqBloc(this);
-    _faqBloc.getFaqs(false);
+    _tabController = new TabController(vsync: this, length: 3);
+    selectedTabPos = widget.fragmentToShow != null ? widget.fragmentToShow : 0;
+    _tabController.animateTo(selectedTabPos);
   }
 
-  void _scrollListener() {
-    if (_itemsScrollController.offset >=
-            _itemsScrollController.position.maxScrollExtent &&
-        !_itemsScrollController.position.outOfRange) {
-      print("reach the bottom");
-      if (_faqBloc.hasNextPage) {
-        Future.delayed(const Duration(milliseconds: 1000), () {
-          _faqBloc.getFaqs(true);
-        });
-      }
-    }
-    if (_itemsScrollController.offset <=
-            _itemsScrollController.position.minScrollExtent &&
-        !_itemsScrollController.position.outOfRange) {
-      print("reach the top");
-    }
-  }
-
-  @override
-  void dispose() {
-    _itemsScrollController.dispose();
-    _faqBloc.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,68 +41,29 @@ class _FaqScreenState extends State<FaqScreen> with LoadMoreListener {
               buttonHandler: _backPressFunction,
             ),
           ),
-          body: RefreshIndicator(
-            color: Colors.white,
-            backgroundColor: Colors.green,
-            onRefresh: () {
-              return _faqBloc.getFaqs(false);
-            },
-            child: Container(
-                color: Colors.transparent,
-                height: double.infinity,
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: StreamBuilder<ApiResponse<FaqResponse>>(
-                          stream: _faqBloc.faqStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              switch (snapshot.data.status) {
-                                case Status.LOADING:
-                                  return CommonApiLoader();
-                                  break;
-                                case Status.COMPLETED:
-                                  return _buildUserWidget(_faqBloc.faqList);
-                                  break;
-                                case Status.ERROR:
-                                  return CommonApiErrorWidget(
-                                      snapshot.data.message,
-                                      _errorWidgetFunction,
-                                      textColorReceived: Colors.black);
-                                  break;
-                              }
-                            }
-                            return Container(
-                              child: Center(
-                                child: Text(""),
-                              ),
-                            );
-                          }),
-                      flex: 1,
-                    ),
-                    Visibility(
-                      child: PaginationLoader(),
-                      visible: isLoadingMore ? true : false,
-                    ),
-                  ],
-                )),
+          body: Column(
+            children: <Widget>[
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                constraints: BoxConstraints.expand(height: 55),
+                child: BottomAppBar(
+                  child: infoTabs(),
+                  color: Colors.white,
+                ),
+              ),
+              Expanded(
+                child: getSubFragment(selectedTabPos),
+                flex: 1,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  @override
-  refresh(bool isLoading) {
-    if (mounted) {
-      setState(() {
-        isLoadingMore = isLoading;
-      });
-      print(isLoadingMore);
-    }
-  }
+
 
   void _backPressFunction() {
     print("_sendOtpFunction clicked");
@@ -140,48 +74,90 @@ class _FaqScreenState extends State<FaqScreen> with LoadMoreListener {
     return Future.value(true);
   }
 
-  _buildUserWidget(List<FaqItem> faqList) {
-    return ListView.builder(
-      itemCount: faqList.length,
-      itemBuilder: (context, index) {
-        return _buildFaqItem(faqList[index]);
-      },
-      shrinkWrap: true,
-      physics: AlwaysScrollableScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
-    );
-  }
-
-  void _errorWidgetFunction() {
-    if (_faqBloc != null) _faqBloc.getFaqs(false);
-  }
-
-  _buildFaqItem(FaqItem faqItem) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-      elevation: 10,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: ExpansionTile(
-        title: Text(
-          "${faqItem.question}",
-          style: TextStyle(
-              fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.black),
+  infoTabs() {
+    return TabBar(
+      controller: _tabController,
+      onTap: tabItemClicked,
+      tabs: [
+        Tab(
+          child: tabItem(context, 'How to Start'),
         ),
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
-            alignment: FractionalOffset.centerLeft,
-            child: Text(
-              "${faqItem.answer}",
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 13.0,
-                  height: 1.8,
-                  color: Colors.black),
-            ),
-          ),
-        ],
+        Tab(
+          child: tabItem(context, 'Steps'),
+        ),
+        Tab(
+          child: tabItem(context, 'How It'),
+        )
+      ],
+      labelColor: Color(colorCoderRedBg),
+      unselectedLabelColor: Color(colorCoderItemSubTitle),
+      indicatorSize: TabBarIndicatorSize.tab,
+      indicatorColor: Colors.red,
+      indicatorWeight: 3,
+      indicator: UnderlineTabIndicator(
+        borderSide: BorderSide(color: Colors.red, width: 2.0),
+        insets: getIndicatorPadding(),
       ),
     );
   }
+
+  getIndicatorPadding() {
+    if (selectedTabPos == 0) {
+      return EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 2.0);
+    } else {
+      return EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 2.0);
+    }
+  }
+
+  Row tabItem(BuildContext context, var title) {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600),
+            ),
+            flex: 2,
+          ),
+        ]);
+  }
+
+  /*
+    While clicking a tab item
+   */
+  void tabItemClicked(int index) {
+    if (mounted) {
+      setState(() {
+        selectedTabPos = index;
+      });
+    }
+  }
+  getSubFragment(int pos) {
+    switch (pos) {
+      case 0:
+        return FundScreen();
+        break;
+      case 1:
+        return StepsScreen();
+        break;
+      case 2:
+        return HowItScreen();
+        break;
+
+      default:
+        return new Center(
+          child: Text("Error"),
+        );
+    }
+  }
+
 }

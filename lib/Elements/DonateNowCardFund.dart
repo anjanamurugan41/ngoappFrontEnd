@@ -83,7 +83,7 @@ class DonateNowCardFundWidget extends StatelessWidget {
               }*/
             },
             child: Text(
-              "Donate Now",
+              "Donate To NGO",
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Color(colorCodeWhite),
