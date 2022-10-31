@@ -39,13 +39,6 @@ class _PricingScreenState extends State<PricingScreen> {
         child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(60.0), // here the desired height
-            child: CommonAppBar(
-              text: "Pricing",
-              buttonHandler: _backPressFunction,
-            ),
-          ),
           body: RefreshIndicator(
             color: Colors.white,
             backgroundColor: Colors.green,

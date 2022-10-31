@@ -68,6 +68,7 @@ class DonateNowCardWidget extends StatelessWidget {
                   id: null,
                   isCampaignRelated: true,
                   isForNgoTrust: true));
+
               //if (CommonMethods().isAuthTokenExist()) {
               /*Get.to(() => ViewAllScreen(
                     isCampaignRelated: true,

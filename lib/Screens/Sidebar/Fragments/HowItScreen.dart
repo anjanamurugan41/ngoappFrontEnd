@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:ngo_app/Blocs/FaqBloc.dart';
 import 'package:ngo_app/Elements/CommonApiErrorWidget.dart';
 import 'package:ngo_app/Elements/CommonApiLoader.dart';
@@ -61,20 +60,20 @@ class _HowItScreenState extends State<HowItScreen> with LoadMoreListener {
         child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          body: Container(
-              color: Colors.transparent,
-              height: double.infinity,
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(5, 5, 5, 10),
-              child: Column(
-                children: <Widget>[
-                  RefreshIndicator(
-                    color: Colors.white,
-                    backgroundColor: Colors.green,
-                    onRefresh: () {
-                      return _faqBloc.getFaqs(false);
-                    },
-                    child: Expanded(
+          body: RefreshIndicator(
+            color: Colors.white,
+            backgroundColor: Colors.green,
+            onRefresh: () {
+              return _faqBloc.getFaqs(false);
+            },
+            child: Container(
+                color: Colors.transparent,
+                height: double.infinity,
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
                       child: StreamBuilder<ApiResponse<FaqResponse>>(
                           stream: _faqBloc.faqStream,
                           builder: (context, snapshot) {
@@ -102,13 +101,13 @@ class _HowItScreenState extends State<HowItScreen> with LoadMoreListener {
                           }),
                       flex: 1,
                     ),
-                  ),
-                  Visibility(
-                    child: PaginationLoader(),
-                    visible: isLoadingMore ? true : false,
-                  ),
-                ],
-              )),
+                    Visibility(
+                      child: PaginationLoader(),
+                      visible: isLoadingMore ? true : false,
+                    ),
+                  ],
+                )),
+          ),
         ),
       ),
     );
