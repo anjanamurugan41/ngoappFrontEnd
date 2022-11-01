@@ -51,6 +51,8 @@ class _EachListItemWidgetState extends State<EachListItemWidget> {
                 topRight: Radius.circular(15),
                 bottomLeft: Radius.circular(15),
                 bottomRight: Radius.circular(15)),
+
+
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.2),
