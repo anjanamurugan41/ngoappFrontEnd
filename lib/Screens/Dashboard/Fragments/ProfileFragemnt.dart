@@ -27,7 +27,7 @@ class ProfileFragment extends StatefulWidget {
 
 class _ProfileFragmentState extends State<ProfileFragment> {
   ProfileBloc profileBloc;
-
+UserDetails  userid = UserDetails();
   @override
   void initState() {
     super.initState();
@@ -97,7 +97,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                 SizedBox(
                   height: 25,
                 ),
-                _buildOptionsSection(),
+                _buildOptionsSection(response.userDetails.id),
                 SizedBox(
                   height: 75,
                 ),
@@ -134,7 +134,6 @@ class _ProfileFragmentState extends State<ProfileFragment> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-
           _buildImageSection(baseUrl, userDetails),
           Container(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -372,7 +371,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
     return img;
   }
 
-  _buildOptionsSection() {
+  _buildOptionsSection( userid) {
     return Wrap(
       direction: Axis.horizontal,
       // alignment: WrapAlignment.center,
@@ -412,7 +411,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
       Get.to(() => MyLoansScreen());
     }
     else if (optionSelected == ProfileOptionsType.MyDocuments) {
-      Get.to(() => MyDocumentsScreen());
+      Get.to(() => MyDocumentsScreen(userid:userid));
     }
   }
 }

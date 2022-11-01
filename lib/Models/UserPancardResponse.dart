@@ -29,6 +29,7 @@ class UserDetails {
     Object date_of_birth;
     String email;
     int id;
+    String baseUrl;
     String image_url;
     String modified_at;
     String name;
@@ -41,7 +42,7 @@ class UserDetails {
     String username;
     String virtual_account_id;
 
-    UserDetails({this.auth_key, this.country_code, this.created_at, this.customer_id, this.date_of_birth, this.email, this.id, this.image_url, this.modified_at, this.name, this.pancard_image, this.password_hash, this.phone_number, this.points, this.role, this.status, this.username, this.virtual_account_id});
+    UserDetails({this.auth_key, this.country_code, this.created_at, this.customer_id, this.date_of_birth, this.email, this.id, this.image_url, this.modified_at, this.name, this.pancard_image, this.password_hash, this.phone_number, this.points, this.role, this.status, this.username, this.virtual_account_id, this.baseUrl});
 
     factory UserDetails.fromJson(Map<String, dynamic> json) {
         return UserDetails(
@@ -52,6 +53,7 @@ class UserDetails {
             date_of_birth: json['date_of_birth'] != null,
             email: json['email'],
             id: json['id'],
+            baseUrl:json['baseUrl'],
             image_url: json['image_url'],
             modified_at: json['modified_at'],
             name: json['name'],
@@ -72,6 +74,7 @@ class UserDetails {
         data['customer_id'] = this.customer_id;
         data['email'] = this.email;
         data['id'] = this.id;
+        data['base_url']=this.baseUrl;
         data['image_url'] = this.image_url;
         data['modified_at'] = this.modified_at;
         data['name'] = this.name;

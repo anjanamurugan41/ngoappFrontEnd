@@ -51,6 +51,8 @@ class _EachListItemWidgetState extends State<EachListItemWidget> {
                 topRight: Radius.circular(15),
                 bottomLeft: Radius.circular(15),
                 bottomRight: Radius.circular(15)),
+
+
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.2),
@@ -156,7 +158,7 @@ class _EachListItemWidgetState extends State<EachListItemWidget> {
                       width: double.infinity,
                       margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: CommonButton(
-                          buttonText: "Donate Now",
+                          buttonText: "Donate To NGO",
                           bgColorReceived: Color(colorCoderRedBg),
                           borderColorReceived: Color(colorCoderRedBg),
                           textColorReceived: Color(colorCodeWhite),
@@ -317,7 +319,7 @@ class _EachListItemWidgetState extends State<EachListItemWidget> {
 
   _redirectToDonate() {
     Get.back();
-    Get.to(() => PaymentInputAmountScreen(
+    Get.to(() => PaymentInputFundAmountScreen(
         paymentType: PaymentType.Donation,
         id: widget._fundraiserItem.id,
         amount: widget._fundraiserItem.fundRequired -

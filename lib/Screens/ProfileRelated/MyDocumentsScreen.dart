@@ -5,13 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:ngo_app/Blocs/panbloc.dart';
-import 'package:ngo_app/Constants/CommonMethods.dart';
 import 'package:ngo_app/Constants/CommonWidgets.dart';
 import 'package:ngo_app/Constants/CustomColorCodes.dart';
-import 'package:ngo_app/Constants/EnumValues.dart';
 import 'package:ngo_app/CustomLibraries/CustomLoader/RoundedLoader.dart';
 import 'package:ngo_app/CustomLibraries/ImagePickerAndCropper/image_picker_handler.dart';
-import 'package:ngo_app/Elements/CommonApiErrorWidget.dart';
 import 'package:ngo_app/Elements/CommonApiLoader.dart';
 import 'package:ngo_app/Elements/CommonAppBar.dart';
 import 'package:ngo_app/Elements/CommonButton.dart';
@@ -32,6 +29,8 @@ import 'package:photo_view/photo_view.dart';
 
 class MyDocumentsScreen extends StatefulWidget {
   @override
+  MyDocumentsScreen({Key key,this.userid}) : super(key: key);
+ final userid;
   _MyDocumentsScreenState createState() => _MyDocumentsScreenState();
 }
 
@@ -54,8 +53,9 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
 
   void initState() {
     super.initState();
+    print("userid->>${widget.userid}");
     _panbloc = PanBloc();
-    _panbloc.getUserRecords(112.toString());
+    _panbloc.getUserRecords(113.toString());
     _controller = new AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -200,17 +200,14 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                                 );
                               case Status.COMPLETED:
                                 UserPancardResponse resp = snapshot.data.data;
-                                return (resp.userDetails == null)
-                                    ? Fluttertoast.showToast(msg: "null")
-                                    : ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: 1,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return _buildUserRecords(
-                                              resp.userDetails.pancard_image);
-                                        });
+                                return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: resp.userDetails.status.bitLength,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return _buildUserRecords(resp);
+                                    });
                               case Status.ERROR:
                                 return Container(
                                   color: Colors.red,
@@ -238,8 +235,8 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     );
   }
 
-  Widget _buildUserRecords(reports) {
-    print("=======>${reports}");
+  Widget _buildUserRecords(UserPancardResponse userdetails) {
+    print("=======>${userdetails}");
     return Card(
       color: Colors.grey[200],
       margin: EdgeInsets.only(top: 10),
@@ -254,15 +251,15 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
             InkWell(
               onTap: () {
                 Get.to(() => PhotoViewer(
-                      image: reports,
-                      networkImage: true,
-                    ));
+                  image: "https://8ed9-117-201-128-246.in.ngrok.io/NGO-Backend/common/uploads/PAN-images/"+userdetails.userDetails.pancard_image,
+                  networkImage: true,
+                ));
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
                 child: CachedNetworkImage(
                   fit: BoxFit.fitWidth,
-                  imageUrl: reports ?? "",
+                  imageUrl: "https://8ed9-117-201-128-246.in.ngrok.io/NGO-Backend/common/uploads/PAN-images/"+userdetails.userDetails.pancard_image,
                   placeholder: (context, url) => Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -280,9 +277,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
     );
   }
 
-  void _errorWidgetFunction() {
-    if (_panbloc != null) _panbloc.getpancardinfo(false);
-  }
+
 
   void _backPressFunction() {
     print("_sendOtpFunction clicked");
@@ -371,8 +366,8 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
             ),
             onPressed: () {
               Get.offAll(() => DashboardScreen(
-                    fragmentToShow: 1,
-                  ));
+                fragmentToShow: 1,
+              ));
             },
             child: Text(
               "Browse fundraisers",
@@ -443,7 +438,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                 print("image->${_image}");
                 if (_image != null) {
                   await _updateDocument(_image);
-                  setState(() {});
+
                 }
                 return Fluttertoast.showToast(msg: "Select Document Image");
               },
@@ -456,82 +451,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
         ),
       ],
     );
-  }
-
-  _showdocumentsectin() {
-    return StreamBuilder(builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        switch (snapshot.data.status) {
-          case Status.LOADING:
-            return SizedBox(
-              child: CommonApiLoader(),
-            );
-          case Status.COMPLETED:
-            return ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: 2,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    color: Colors.grey[200],
-                    margin: EdgeInsets.only(top: 10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _documentName.text,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Get.to(() => Image(
-                                    image: FileImage(File(_image.path)),
-                                  ));
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: CachedNetworkImage(
-                                fit: BoxFit.fitWidth,
-                                imageUrl: _imageUrl,
-                                placeholder: (context, url) => Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                                errorWidget: (context, url, error) => Container(
-                                    margin: EdgeInsets.all(5),
-                                    child: Image(
-                                      image: AssetImage(
-                                          'assets/images/ic_404_error.png'),
-                                    )),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                });
-          case Status.ERROR:
-            return CommonApiErrorWidget(
-                snapshot.data.message, _errorWidgetFunction);
-        }
-      }
-      return SizedBox(
-        height: 30,
-        child: Container(
-          color: Colors.lightBlue,
-        ),
-      );
-    });
   }
 
   Future _updateDocument(File reportFile) async {
@@ -607,90 +526,90 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       return Center(
         child: _image == null
             ? Container(
-                color: Colors.black12,
-                child: CachedNetworkImage(
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                  imageUrl: _imageUrl,
-                  placeholder: (context, url) => Center(
-                    child: RoundedLoader(),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    child: Image.asset(
-                      ('assets/images/no_image.png'),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-                padding: EdgeInsets.all(0),
-              )
-            : Container(
-                height: 180.0,
-                width: double.infinity,
-                child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
-                    (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                  return Container(
-                    child: Image.asset(
-                      ('assets/images/no_image.png'),
-                      fit: BoxFit.fill,
-                    ),
-                  );
-                }),
-                decoration: BoxDecoration(
-                  color: Colors.cyan[100],
-                  borderRadius:
-                      new BorderRadius.all(const Radius.circular(80.0)),
-                  image: new DecorationImage(
-                      image: new AssetImage('assets/images/no_image.png'),
-                      fit: BoxFit.cover),
-                ),
+          color: Colors.black12,
+          child: CachedNetworkImage(
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+            imageUrl: _imageUrl,
+            placeholder: (context, url) => Center(
+              child: RoundedLoader(),
+            ),
+            errorWidget: (context, url, error) => Container(
+              child: Image.asset(
+                ('assets/images/no_image.png'),
+                fit: BoxFit.fill,
               ),
+            ),
+          ),
+          padding: EdgeInsets.all(0),
+        )
+            : Container(
+          height: 180.0,
+          width: double.infinity,
+          child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
+              (BuildContext context, Object exception,
+              StackTrace stackTrace) {
+            return Container(
+              child: Image.asset(
+                ('assets/images/no_image.png'),
+                fit: BoxFit.fill,
+              ),
+            );
+          }),
+          decoration: BoxDecoration(
+            color: Colors.cyan[100],
+            borderRadius:
+            new BorderRadius.all(const Radius.circular(80.0)),
+            image: new DecorationImage(
+                image: new AssetImage('assets/images/no_image.png'),
+                fit: BoxFit.cover),
+          ),
+        ),
       );
     } else {
       return Center(
         child: _image == null
             ? Container(
-                color: Colors.black12,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Image(
-                        image: AssetImage('assets/images/no_image.png'),
-                        height: double.infinity,
-                        width: double.infinity,
-                      ),
-                      flex: 1,
-                    ),
-                  ],
+          color: Colors.black12,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Image(
+                  image: AssetImage('assets/images/no_image.png'),
+                  height: double.infinity,
+                  width: double.infinity,
                 ),
-                padding: EdgeInsets.all(5),
-              )
-            : Container(
-                height: 190.0,
-                width: double.infinity,
-                child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
-                    (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                  return Container(
-                    child: Image.asset(
-                      ('assets/images/no_image.png'),
-                      fit: BoxFit.fill,
-                    ),
-                  );
-                }),
-                decoration: BoxDecoration(
-                  color: Colors.cyan[100],
-                  borderRadius:
-                      new BorderRadius.all(const Radius.circular(80.0)),
-                  image: new DecorationImage(
-                      image: new AssetImage('assets/images/no_image.png'),
-                      fit: BoxFit.cover),
-                ),
+                flex: 1,
               ),
+            ],
+          ),
+          padding: EdgeInsets.all(5),
+        )
+            : Container(
+          height: 190.0,
+          width: double.infinity,
+          child: Image.file(_image, fit: BoxFit.fill, errorBuilder:
+              (BuildContext context, Object exception,
+              StackTrace stackTrace) {
+            return Container(
+              child: Image.asset(
+                ('assets/images/no_image.png'),
+                fit: BoxFit.fill,
+              ),
+            );
+          }),
+          decoration: BoxDecoration(
+            color: Colors.cyan[100],
+            borderRadius:
+            new BorderRadius.all(const Radius.circular(80.0)),
+            image: new DecorationImage(
+                image: new AssetImage('assets/images/no_image.png'),
+                fit: BoxFit.cover),
+          ),
+        ),
       );
     }
   }

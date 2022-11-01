@@ -36,7 +36,6 @@ class PanBloc {
     authorisationRepository = AuthorisationRepository();
     _panController = StreamController<ApiResponse<PancardResponse>>();
     _userRecordsController=StreamController<ApiResponse<UserPancardResponse>>();
-
     authorisationRepository = AuthorisationRepository ();
   }
 
