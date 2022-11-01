@@ -23,7 +23,6 @@ import 'package:ngo_app/Screens/Sidebar/FaqScreen.dart';
 import 'package:ngo_app/Screens/Sidebar/HowItWorksScreen.dart';
 import 'package:ngo_app/Screens/Sidebar/MediaScreen.dart';
 import 'package:ngo_app/Screens/Sidebar/PartnerRequestScreen.dart';
-import 'package:ngo_app/Screens/Sidebar/PricingScreen.dart';
 import 'package:ngo_app/Screens/Sidebar/VolunteerRequestScreen.dart';
 import 'package:ngo_app/Utilities/LoginModel.dart';
 import 'AllCategoriesScreen.dart';
@@ -382,13 +381,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                           AssetImage('assets/images/ic_nav_media.png')),
                       drawerItem(context, 9, "Partners",
                           AssetImage('assets/images/ic_nav_partners.png')),
-                      drawerItem(context, 10, "Pricing",
-                          AssetImage('assets/images/ic_nav_pricing.png')),
-                      drawerItem(context, 11, "FAQ",
+                      drawerItem(context, 10, "FAQ",
                           AssetImage('assets/images/ic_nav_faq.png')),
                       drawerItem(
                           context,
-                          12,
+                          11,
                           CommonMethods().isAuthTokenExist()
                               ? "Sign Out"
                               : "Log In",
@@ -486,12 +483,9 @@ class _DashboardScreenState extends State<DashboardScreen>
             // partners
             Get.to(() => PartnerRequestScreen());
           } else if (type == 10) {
-            // pricing
-            Get.to(() => PricingScreen());
-          } else if (type == 11) {
             // faq
             Get.to(() => FaqScreen());
-          } else if (type == 12) {
+          } else if (type == 11) {
             // sign out
             if (CommonMethods().isAuthTokenExist()) {
               CommonWidgets().showCommonDialog(

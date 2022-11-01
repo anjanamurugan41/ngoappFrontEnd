@@ -28,75 +28,84 @@ class _StepsScreenState extends State<StepsScreen>  {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.start,size: 30,),
-                    SizedBox(width: MediaQuery.of(context).size.width * .04 ,),
+                    Image.asset("assets/images/ic_start_fundraiser_step.png",height: 55,width: 50,),
+                    SizedBox(width: MediaQuery.of(context).size.width * .03 ,),
                      Text("Start your fundraiser",style: TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Container(
-                  margin: const EdgeInsets.only(left: 17),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                  margin:  EdgeInsets.only(left: 24,),
+                  padding:  EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                   decoration: DottedDecoration(
-                    color: Colors.grey,
+                    color: Colors.blue,
                     strokeWidth: 2,
                     linePosition: LinePosition.left,
                       ),
-                  child: const Text('It’ll take only 2 minutes. Just tell us a few details about you and the ones you are raising funds for.'),
+                  child:  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: Text('It’ll take only 2 minutes. Just tell us a few details about you and the ones you are raising funds for.'),
+                  ),
                 ),
                 SizedBox(height:MediaQuery.of(context).size.height * .02  ,),
                 Row(
                   children: [
-                    Icon(Icons.start,size: 30,),
-                    SizedBox(width: MediaQuery.of(context).size.width * .04 ,),
+                    Image.asset("assets/images/ic_choose_purpose.png",height: 55,width: 50,),
+                    SizedBox(width: MediaQuery.of(context).size.width * .03,),
                      Text("Share your fundraiser",style: TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Container(
-                  margin:  EdgeInsets.only(left: 17),
+                  margin:  EdgeInsets.only(left: 24,top: 5),
                   padding:  EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                   decoration: DottedDecoration(
-                    color: Colors.grey,
+                    color: Colors.blue,
                     strokeWidth: 2,
                     linePosition: LinePosition.left,
                   ),
-                  child:  Column(
-                    children: [
-                      Text('All you need to do is share the fundraiser with your friends and family. In no time, support will start pouring in.'),
-                      SizedBox(height:MediaQuery.of(context).size.height * .01 ,),
-                      Padding(
-                        padding:  EdgeInsets.only(right:80),
-                        child: Text("Share your fundraiser directly from dashboard on social media.",
-                            style: TextStyle(fontSize: 5,fontWeight: FontWeight.bold,color: Colors.grey),),
-                      ),
-                    ],
+                  child:  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: Column(
+                      children: [
+                        Text('All you need to do is share the fundraiser with your friends and family. In no time, support will start pouring in.'),
+                        SizedBox(height:MediaQuery.of(context).size.height * .01 ,),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 70, 5),
+                          child: Text("Share your fundraiser directly from dashboard on social media.",
+                              style: TextStyle(fontSize: 5,fontWeight: FontWeight.bold,color: Colors.grey),),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height:MediaQuery.of(context).size.height * .02 ,),
                 Row(
                   children: [
-                    Icon(Icons.start,size: 30,),
-                    SizedBox(width: MediaQuery.of(context).size.width * .04 ,),
+                    Image.asset("assets/images/ic_pay_step.png",height: 55,width: 50,),
+                    SizedBox(width: MediaQuery.of(context).size.width * .03 ,),
                     Text("Withdraw Funds",style: TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Container(
-                  margin:  EdgeInsets.only(left: 17),
+                  margin:  EdgeInsets.only(left: 24,top: 5),
                   padding:  EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                   decoration: DottedDecoration(
-                    color: Colors.grey,
+                    color: Colors.blue,
                     strokeWidth: 2,
                     linePosition: LinePosition.left,
                   ),
-                  child:  Column(
-                    children: [
-                      Text('The funds raised can be withdrawn without any hassle directly to your bank account.'),
-                      SizedBox(height:MediaQuery.of(context).size.height * .01 ,),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 120),
-                        child: Text("It takes only 5 minutes to withdraw funds on NGO.",
-                          style: TextStyle(fontSize: 5,fontWeight: FontWeight.bold,color: Colors.grey),),
-                      ),
-                    ],
+                  child:  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: Column(
+                      children: [
+                        Text('The funds raised can be withdrawn without any hassle directly to your bank account.'),
+                        SizedBox(height:MediaQuery.of(context).size.height * .01 ,),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 110, 5),
+                          child: Text("It takes only 5 minutes to withdraw funds on NGO.",
+                            style: TextStyle(fontSize: 5,fontWeight: FontWeight.bold,color: Colors.grey),),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

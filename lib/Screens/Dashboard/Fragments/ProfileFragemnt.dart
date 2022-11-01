@@ -134,7 +134,6 @@ class _ProfileFragmentState extends State<ProfileFragment> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-
           _buildImageSection(baseUrl, userDetails),
           Container(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
