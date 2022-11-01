@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
@@ -98,8 +99,11 @@ class _FormSetPricingState extends State<FormSetPricing> {
                             return CommonApiLoader();
                             break;
                           case Status.COMPLETED:
-                            return _buildPricingStrategies(
-                                _pricingBloc.pricingList);
+                            return Column(
+                              children: [
+                                _buildPricingStrategies(_pricingBloc.pricingList),
+                              ],
+                            );
                             break;
                           case Status.ERROR:
                             return CommonApiErrorWidget(
@@ -108,12 +112,23 @@ class _FormSetPricingState extends State<FormSetPricing> {
                             break;
                         }
                       }
-
                       return Container();
                     },
                   ),
                   flex: 1,
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(width: MediaQuery.of(context).size.width * .06),
+                    Icon(Icons.warning_amber_rounded,color: Colors.yellow,size: 20,),
+                    SizedBox(width: MediaQuery.of(context).size.width * .03),
+                    Text("Bank charges deducted",style: TextStyle(color: Colors.white,fontSize: 10,
+                        fontWeight: FontWeight.w500),),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * .04),
+
               ],
             ),
           ),
@@ -145,7 +160,8 @@ class _FormSetPricingState extends State<FormSetPricing> {
           scrollDirection: Axis.vertical,
           itemCount: pricingList.length,
           itemBuilder: (context, index) {
-            return _buildPricingInfo(index, pricingList[index]);
+            return
+              _buildPricingInfo(index, pricingList[index]);
           },
           shrinkWrap: true,
           physics: const ClampingScrollPhysics(),

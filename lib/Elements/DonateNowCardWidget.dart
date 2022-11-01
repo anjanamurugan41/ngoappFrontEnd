@@ -43,7 +43,7 @@ class DonateNowCardWidget extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 10,
                       color: Color(colorCodeGreyPageBg),
                       fontWeight: FontWeight.w600)),
             ),
@@ -87,7 +87,7 @@ class DonateNowCardWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Color(colorCodeWhite),
-                  fontSize: 12,
+                  fontSize: 10,
                   fontWeight: FontWeight.w600),
             ),
           )

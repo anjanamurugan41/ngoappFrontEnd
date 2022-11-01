@@ -359,33 +359,33 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      drawerItem(context, 1, "Donate Now",
-                          AssetImage('assets/images/ic_nav_donate_now.png')),
+                      // drawerItem(context, 1, "Donate Now",
+                      //     AssetImage('assets/images/ic_nav_donate_now.png')),
                       drawerItem(
                           context,
-                          2,
+                          1,
                           "Start A Fundraiser",
                           AssetImage(
                               'assets/images/ic_nav_start_fundraiser.png')),
-                      drawerItem(context, 3, "Volunteer With Us",
+                      drawerItem(context, 2, "Volunteer With Us",
                           AssetImage('assets/images/ic_nav_volunteer.png')),
-                      drawerItem(context, 4, "How It Works",
+                      drawerItem(context, 3, "How It Works",
                           AssetImage('assets/images/ic_nav_how_it_works.png')),
-                      drawerItem(context, 5, "Lend",
+                      drawerItem(context, 4, "Lend",
                           AssetImage('assets/images/ic_nav_loans.png')),
-                      drawerItem(context, 6, "About Us",
+                      drawerItem(context, 5, "About Us",
                           AssetImage('assets/images/ic_nav_about_us.png')),
-                      drawerItem(context, 7, "Contact Us",
+                      drawerItem(context, 6, "Contact Us",
                           AssetImage('assets/images/ic_nav_contact_us.png')),
-                      drawerItem(context, 8, "Media",
+                      drawerItem(context, 7, "Media",
                           AssetImage('assets/images/ic_nav_media.png')),
-                      drawerItem(context, 9, "Partners",
+                      drawerItem(context, 8, "Partners",
                           AssetImage('assets/images/ic_nav_partners.png')),
-                      drawerItem(context, 10, "FAQ",
+                      drawerItem(context, 9, "FAQ",
                           AssetImage('assets/images/ic_nav_faq.png')),
                       drawerItem(
                           context,
-                          11,
+                          10,
                           CommonMethods().isAuthTokenExist()
                               ? "Sign Out"
                               : "Log In",
@@ -430,26 +430,27 @@ class _DashboardScreenState extends State<DashboardScreen>
         ]),
         onTap: () {
           Get.back();
-          if (type == 1) {
-            //Donate now
-            Get.to(() => PaymentInputAmountScreen(
-                paymentType: PaymentType.Donation,
-                id: null,
-                isCampaignRelated: true,
-                isForNgoTrust: true));
-            //if (CommonMethods().isAuthTokenExist()) {
-            /*Get.to(() => ViewAllScreen(
-                  isCampaignRelated: true,
-                ));*/
-            /*} else {
-              CommonWidgets().showCommonDialog(
-                  "You need to login before use this feature!!",
-                  AssetImage('assets/images/ic_notification_message.png'),
-                  CommonMethods().alertLoginOkClickFunction,
-                  false,
-                  true);
-            }*/
-          } else if (type == 2) {
+          // if (type == 1) {
+          //   //Donate now
+          //   Get.to(() => PaymentInputAmountScreen(
+          //       paymentType: PaymentType.Donation,
+          //       id: null,
+          //       isCampaignRelated: true,
+          //       isForNgoTrust: true));
+          //   //if (CommonMethods().isAuthTokenExist()) {
+          //   /*Get.to(() => ViewAllScreen(
+          //         isCampaignRelated: true,
+          //       ));*/
+          //   /*} else {
+          //     CommonWidgets().showCommonDialog(
+          //         "You need to login before use this feature!!",
+          //         AssetImage('assets/images/ic_notification_message.png'),
+          //         CommonMethods().alertLoginOkClickFunction,
+          //         false,
+          //         true);
+          //   }*/
+          // }
+           if (type == 1) {
             // start a fundraiser
             if (CommonMethods().isAuthTokenExist()) {
               Get.to(() => AllCategoriesScreen(false));
@@ -461,31 +462,31 @@ class _DashboardScreenState extends State<DashboardScreen>
                   false,
                   true);
             }
-          } else if (type == 3) {
+          } else if (type == 2) {
             // volunteer with us
             Get.to(() => VolunteerRequestScreen());
-          } else if (type == 4) {
+          } else if (type == 3) {
             // how it works
             Get.to(() => HowItWorksScreen());
-          } else if (type == 5) {
+          } else if (type == 4) {
             // lend
             Get.to(() => LendListingScreen());
-          } else if (type == 6) {
+          } else if (type == 5) {
             // about us
             Get.to(() => AboutUsScreen());
-          } else if (type == 7) {
+          } else if (type == 6) {
             // contact us
             Get.to(() => ContactUsScreen());
-          } else if (type == 8) {
+          } else if (type == 7) {
             // media
             Get.to(() => MediaScreen());
-          } else if (type == 9) {
+          } else if (type == 8) {
             // partners
             Get.to(() => PartnerRequestScreen());
-          } else if (type == 10) {
+          } else if (type == 9) {
             // faq
             Get.to(() => FaqScreen());
-          } else if (type == 11) {
+          } else if (type == 10) {
             // sign out
             if (CommonMethods().isAuthTokenExist()) {
               CommonWidgets().showCommonDialog(

@@ -388,7 +388,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
               width: double.infinity,
               margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: CommonButton(
-                  buttonText: "Donate Now",
+                  buttonText: "Donate To NGO",
                   bgColorReceived: Color(colorCoderRedBg),
                   borderColorReceived: Color(colorCoderRedBg),
                   textColorReceived: Color(colorCodeWhite),
@@ -722,7 +722,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
             padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
             alignment: FractionalOffset.centerLeft,
             child: Text(
-              "A/c No.  :  ${data.fundraiserDetails.virtualAccountNumber}",
+              "A/c No.  :  ${data.fundraiserDetails.beneficiaryAccountNumber}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -735,7 +735,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
             padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
             alignment: FractionalOffset.centerLeft,
             child: Text(
-              "A/c Name  :  ${data.fundraiserDetails.virtualAccountName}",
+              "A/c Name  :  ${data.fundraiserDetails.beneficiaryAccountName}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -761,7 +761,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
             padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
             alignment: FractionalOffset.centerLeft,
             child: Text(
-              "IFSC      :  ${data.fundraiserDetails.virtualAccountIfsc}",
+              "IFSC      :  ${data.fundraiserDetails.beneficiaryIfsc}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
