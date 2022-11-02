@@ -29,8 +29,9 @@ import 'package:photo_view/photo_view.dart';
 
 class MyDocumentsScreen extends StatefulWidget {
   @override
-  MyDocumentsScreen({Key key,this.userid}) : super(key: key);
+  MyDocumentsScreen({Key key,this.userid,this.url}) : super(key: key);
  final userid;
+ final url ;
   _MyDocumentsScreenState createState() => _MyDocumentsScreenState();
 }
 
@@ -53,9 +54,9 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
 
   void initState() {
     super.initState();
-    print("userid->>${widget.userid}");
+    print("userid->>${widget.url}");
     _panbloc = PanBloc();
-    _panbloc.getUserRecords(113.toString());
+    _panbloc.getUserRecords(widget.userid.toString());
     _controller = new AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -73,6 +74,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   }
 
   @override
+  String Response ="";
   Widget build(BuildContext context) {
     return SafeArea(
       child: WillPopScope(
@@ -119,75 +121,6 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                       height: 10,
                     ),
 
-                    // StreamBuilder(
-                    //   stream: _panbloc.userRecordStream,
-                    //     builder: (context, snapshot) {
-                    //       if (snapshot.hasData) {
-                    //         switch (snapshot.data.status) {
-                    //           case Status.LOADING:
-                    //             return SizedBox(
-                    //               child: CommonApiLoader(),
-                    //             );
-                    //           case Status.COMPLETED:
-                    //             UserPancardResponse resp = snapshot.data.data;
-                    //             return ListView.builder(
-                    //                 physics: NeverScrollableScrollPhysics(),
-                    //                 shrinkWrap: true,
-                    //                 itemCount: 1,
-                    //                 itemBuilder:
-                    //                     (BuildContext context, int index) {
-                    //                   return Card(
-                    //                     color: Colors.grey[200],
-                    //                     margin: EdgeInsets.only(top: 10),
-                    //                     child: Padding(
-                    //                       padding: const EdgeInsets.all(8.0),
-                    //                       child: Column(
-                    //                         crossAxisAlignment: CrossAxisAlignment.start,
-                    //                         children: [
-                    //                           InkWell(
-                    //                             onTap: () {
-                    //                               Get.to(() =>
-                    //                                   Image(
-                    //                                     image: FileImage(File(resp.userDetails.pancard_image)),),);
-                    //                             },
-                    //                             child: ClipRRect(
-                    //                               borderRadius: BorderRadius.circular(5),
-                    //                               child: CachedNetworkImage(
-                    //                                 fit: BoxFit.fitWidth,
-                    //                                 imageUrl:resp.userDetails.pancard_image,
-                    //                                 placeholder: (context, url) =>
-                    //                                     Center(
-                    //                                       child: CircularProgressIndicator(),
-                    //                                     ),
-                    //                                 errorWidget: (context, url, error) =>
-                    //                                     Container(
-                    //                                         margin: EdgeInsets.all(5),
-                    //                                         child: Image(
-                    //                                           image: AssetImage(
-                    //                                               'assets/images/ic_404_error.png'),
-                    //                                         )),
-                    //                               ),
-                    //                             ),
-                    //                           ),
-                    //                         ],
-                    //                       ),
-                    //                     ),
-                    //                   );
-                    //                 });
-                    //           case Status.ERROR:
-                    //             return CommonApiErrorWidget(
-                    //                 snapshot.data.message,
-                    //                 _errorWidgetFunction);
-                    //         }
-                    //       }
-                    //       return SizedBox(
-                    //         height: 30,
-                    //         child: Container(
-                    //           color: Colors.lightBlue,
-                    //         ),
-                    //       );
-                    //     }),
-
                     StreamBuilder<ApiResponse<dynamic>>(
                         stream: _panbloc.userRecordStream,
                         builder: (context, snapshot) {
@@ -200,6 +133,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                                 );
                               case Status.COMPLETED:
                                 UserPancardResponse resp = snapshot.data.data;
+                                print("userpancardresponse->${resp}");
                                 return ListView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
@@ -236,7 +170,8 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   }
 
   Widget _buildUserRecords(UserPancardResponse userdetails) {
-    print("=======>${userdetails}");
+    print("=======>${userdetails.baseurl}");
+
     return Card(
       color: Colors.grey[200],
       margin: EdgeInsets.only(top: 10),
@@ -251,7 +186,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
             InkWell(
               onTap: () {
                 Get.to(() => PhotoViewer(
-                  image: "https://8ed9-117-201-128-246.in.ngrok.io/NGO-Backend/common/uploads/PAN-images/"+userdetails.userDetails.pancard_image,
+                  image: userdetails.baseurl+userdetails.userDetails.pancard_image,
                   networkImage: true,
                 ));
               },
@@ -259,7 +194,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
                 borderRadius: BorderRadius.circular(5),
                 child: CachedNetworkImage(
                   fit: BoxFit.fitWidth,
-                  imageUrl: "https://8ed9-117-201-128-246.in.ngrok.io/NGO-Backend/common/uploads/PAN-images/"+userdetails.userDetails.pancard_image,
+                  imageUrl:userdetails.baseurl+userdetails.userDetails.pancard_image,
                   placeholder: (context, url) => Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -437,7 +372,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
               buttonHandler: () async {
                 print("image->${_image}");
                 if (_image != null) {
-                  await _updateDocument(_image);
+                  await _updateDocument(_image,);
 
                 }
                 return Fluttertoast.showToast(msg: "Select Document Image");
@@ -458,7 +393,9 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
       PancardResponse response = await _panbloc.uploadUserRecords(reportFile);
       Get.back();
       print("response==>${response}");
-
+  Response =response.baseUrl;
+      print("response==>${Response}");
+      print(response.baseUrl);
       if (response.success) {
         Fluttertoast.showToast(msg: "${response.message}");
         await _panbloc.uploadUserRecords(reportFile);

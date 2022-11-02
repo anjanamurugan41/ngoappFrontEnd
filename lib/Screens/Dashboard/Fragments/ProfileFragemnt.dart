@@ -28,11 +28,15 @@ class ProfileFragment extends StatefulWidget {
 class _ProfileFragmentState extends State<ProfileFragment> {
   ProfileBloc profileBloc;
 UserDetails  userid = UserDetails();
+int userids = 0;
+String url ="";
   @override
   void initState() {
     super.initState();
     profileBloc = new ProfileBloc();
     profileBloc.getProfileInfo();
+
+
   }
 
   @override
@@ -97,7 +101,7 @@ UserDetails  userid = UserDetails();
                 SizedBox(
                   height: 25,
                 ),
-                _buildOptionsSection(response.userDetails.id),
+                _buildOptionsSection(response.userDetails.id,response.baseUrl),
                 SizedBox(
                   height: 75,
                 ),
@@ -310,6 +314,8 @@ UserDetails  userid = UserDetails();
   }
 
   _buildImageSection(String baseUrl, UserDetails userDetails) {
+    userids = userDetails.id;
+    url = userDetails.baseUrl;
     return Container(
       alignment: FractionalOffset.center,
       width: double.infinity,
@@ -371,7 +377,7 @@ UserDetails  userid = UserDetails();
     return img;
   }
 
-  _buildOptionsSection( userid) {
+  _buildOptionsSection( baseurl,userid ) {
     return Wrap(
       direction: Axis.horizontal,
       // alignment: WrapAlignment.center,
@@ -411,7 +417,7 @@ UserDetails  userid = UserDetails();
       Get.to(() => MyLoansScreen());
     }
     else if (optionSelected == ProfileOptionsType.MyDocuments) {
-      Get.to(() => MyDocumentsScreen(userid:userid));
+      Get.to(() => MyDocumentsScreen(userid:userids,url:url));
     }
   }
 }
