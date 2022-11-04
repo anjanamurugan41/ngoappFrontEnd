@@ -108,6 +108,15 @@ class CommonBloc {
     }
   }
 
+  Future<CommonResponse> uploadPanDocument(FormData formData) async {
+    try {
+      CommonResponse commonResponse =
+      await _commonInfoRepository.uploadPanDocument(formData);
+      return commonResponse;
+    } catch (error) {
+      throw CommonMethods().getNetworkError(error);
+    }
+  }
   Future<RelationsResponse> getRelations() async {
     try {
       RelationsResponse response = await _commonInfoRepository.getRelations();

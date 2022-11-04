@@ -204,6 +204,12 @@ class CommonInfoRepository {
     return CommonResponse.fromJson(response.data);
   }
 
+  Future<CommonResponse> uploadPanDocument(FormData formData) async {
+    final response = await apiProvider
+        .getInstance()
+        .post(RemoteConfig.pancardupload, data: formData);
+    return CommonResponse.fromJson(response.data);
+  }
   Future<RelationsResponse> getRelations() async {
     final response =
         await apiProvider.getInstance().get(RemoteConfig.getRelations);

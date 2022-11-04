@@ -347,6 +347,7 @@ class _FormTwoScreenState extends State<FormTwoScreen>
 
   void _nextBtnClickFunction() {
     print("_clearBtnClickFunction clicked");
+    print("_clearBtnClickFunction clicked->${_coverImage}");
     if (LoginModel().isFundraiserEditMode) {
       if (_formKey.currentState.validate()) {
         FocusScope.of(context).requestFocus(FocusNode());
