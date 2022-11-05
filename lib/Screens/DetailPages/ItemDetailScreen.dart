@@ -39,6 +39,7 @@ import 'package:ngo_app/ServiceManager/ApiResponse.dart';
 import 'package:ngo_app/Utilities/LoginModel.dart';
 import 'package:share/share.dart';
 
+import '../Lend/PaymentInputFundAmountScreen.dart';
 import 'AssuranceMsgScreen.dart';
 import 'ReportIssueScreen.dart';
 import 'ReviewItemScreen.dart';
@@ -399,7 +400,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
                               "Successfully collected the required amount, thank you");
                     } else {
                       if (CommonMethods().isAuthTokenExist()) {
-                        Get.to(() => PaymentInputAmountScreen(
+                        Get.to(() => PaymentInputFundAmountScreen(
                             paymentType: PaymentType.Donation,
                             id: widget.fundraiserIdReceived,
                             amount: data.fundraiserDetails.fundRequired -
@@ -466,20 +467,20 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
                   ),
                   flex: 1,
                 ),
-                /*Expanded(
-                  child: Container(
-                    height: 45.0,
-                    width: double.infinity,
-                    margin: EdgeInsets.fromLTRB(5, 10, 10, 0),
-                    child: CommonButton(
-                        buttonText: "Withdraw",
-                        bgColorReceived: Color(colorCodeGreyPageBg),
-                        borderColorReceived: Color(colorCodeGreyPageBg),
-                        textColorReceived: Color(colorCodeWhite),
-                        buttonHandler: () {}),
-                  ),
-                  flex: 1,
-                )*/
+                // Expanded(
+                //   child: Container(
+                //     height: 45.0,
+                //     width: double.infinity,
+                //     margin: EdgeInsets.fromLTRB(5, 10, 10, 0),
+                //     child: CommonButton(
+                //         buttonText: "Withdraw",
+                //         bgColorReceived: Color(colorCodeGreyPageBg),
+                //         borderColorReceived: Color(colorCodeGreyPageBg),
+                //         textColorReceived: Color(colorCodeWhite),
+                //         buttonHandler: () {}),
+                //   ),
+                //   flex: 1,
+                // )
               ],
             ),
             visible: CommonMethods()

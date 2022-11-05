@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:ngo_app/Blocs/paymentchecksum.dart';
@@ -85,7 +86,7 @@ class _RegisterPaymentScrennState extends State<RegisterPaymentScrenn> {
     } catch (e, s) {
       Completer().completeError(e, s);
       Get.back();
-      Text('Something went wrong. Please try again');
+      Fluttertoast.showToast(msg:'Something went wrong. Please try again');
     }
   }
 
@@ -112,7 +113,7 @@ class _RegisterPaymentScrennState extends State<RegisterPaymentScrenn> {
 
         setState(() {
           result = value.toString();
-          Text("Payment Succesfully Completed,Check bookings section");
+          Fluttertoast.showToast(msg:"Payment Succesfully Completed,Check bookings section");
         });
 
 
@@ -123,30 +124,27 @@ class _RegisterPaymentScrennState extends State<RegisterPaymentScrenn> {
           //AppDialogs.message("Payment failed, Please try again");
           setState(() {
             result = onError.message + " \n  " + onError.details.toString();
-            Text("Payment failed, Please try again");
+            Fluttertoast.showToast(msg:"Payment failed, Please try again");
           });
         } else {
           //AppDialogs.message("Payment failed, Please try again");
-          setState(() {
-            result = onError.toString();
-            Text("Payment failed, Please try again");
-          });
         }
       });
     } catch (err) {
       result = err.toString();
-      Text("Payment failed, Please try again");
+      Fluttertoast.showToast(msg:"Payment failed, Please try again");
     }
   }
 
   PaymentBlocUser _paymentBlocUser = PaymentBlocUser();
   Future _validateCheckSum(String OrderId) async {
     try {
-      CommonResponse response = await _paymentBlocUser.validateCheckSum(widget.name,widget.email,widget.phone,OrderId);
+      final response = await _paymentBlocUser.validateCheckSum(widget.name,widget.email,widget.phone,OrderId);
+      return response;
     } catch (e, s) {
       Completer().completeError(e, s);
-      //Get.back();
-      Text('Something went wrong. Please try again');
+      Get.back();
+      Fluttertoast.showToast(msg:'Something went wrong. Please try again');
     }
   }
 }

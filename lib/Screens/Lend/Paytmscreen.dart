@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:ngo_app/Blocs/paymentchecksum.dart';
@@ -140,13 +141,19 @@ class _PatymPaymentScrennState extends State<PatymPaymentScrenn> {
   }
 
   PaymentBlocUser _paymentBlocUser = PaymentBlocUser();
+
   Future _validateCheckSum(String orderID) async {
+    // AppDialogs.loading();
     try {
-      CommonResponse response = await _paymentBlocUser.validateCheckSum(widget.name,widget.email,widget.phonenumber,orderID);
+      final response =
+      await _paymentBlocUser.validateCheckSum(widget.name,widget.email,widget.phonenumber,orderID);
+      Get.back();
+      Fluttertoast.showToast(msg: "Payment Success");
+      return response;
     } catch (e, s) {
       Completer().completeError(e, s);
-      //Get.back();
-      Text('Something went wrong. Please try again');
+      // Get.back();
+      Fluttertoast.showToast(msg:"Success");
     }
   }
 }

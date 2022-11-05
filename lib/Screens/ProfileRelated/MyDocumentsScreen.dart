@@ -391,16 +391,16 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
   Future _updateDocument(File reportFile) async {
     try {
       PancardResponse response = await _panbloc.uploadUserRecords(reportFile);
-      Get.back();
+        Get.back();
       print("response==>${response}");
   Response =response.baseUrl;
       print("response==>${Response}");
       print(response.baseUrl);
       if (response.success) {
-        Fluttertoast.showToast(msg: "${response.message}");
+        _showDialog(context,response.message);
         await _panbloc.uploadUserRecords(reportFile);
       } else {
-        Fluttertoast.showToast(msg: "${response.message}");
+        _showDialog(context,response.message);
       }
     } catch (e, s) {
       Completer().completeError(e, s);
@@ -549,5 +549,51 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen>
         ),
       );
     }
+  }
+  _showDialog(BuildContext context,String text) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(14.0))),
+          backgroundColor: Colors.white,
+          insetPadding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 60.0,),
+          elevation: 0.0,
+          title: Column(
+            children: [
+              Positioned(
+                left: 10,
+                right: 20,
+                child: CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius:70,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Image(
+                      //  color: Colors.green[900],
+
+                        image: AssetImage('assets/images/icons8-ok.gif'),
+                        height: 50,
+                        width: 50,
+                      ),
+                  ),
+                ),
+              ),
+              Text(text,style: TextStyle(color: Colors.red[900]),),
+            ],
+          ),
+          // content: const Text('this is a demo alert diolog'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK',style: TextStyle(color: Colors.green),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+
 import '../../Models/CommonResponse.dart';
 import '../../ServiceManager/ApiProvider.dart';
 
@@ -10,18 +13,18 @@ class PaymentBlocUser {
     _repository = PaymentRepositoryUser();
   }
 
-  Future<CommonResponse> validateCheckSum(String name,email,phone,orderid) async {
+  Future validateCheckSum(String name,email,phone,orderid) async {
     try {
-      CommonResponse response = await _repository.validateCheckSum(name,email,phone,orderid);
+     final  response = await _repository.validateCheckSum(name,email,phone,orderid);
       return response;
     } catch (e, s) {
       Completer().completeError(e, s);
       throw e;
     }
   }
-  Future<CommonResponse> validateCheckSumfund(String orderId, String fundraiserId) async {
+  Future validateCheckSumfund(String orderId, String fundraiserId) async {
     try {
-      CommonResponse response = await _repository.validateCheckSumfund(orderId, fundraiserId);
+      final response = await _repository.validateCheckSumfund(orderId, fundraiserId);
       return response;
     } catch (e, s) {
       Completer().completeError(e, s);
@@ -38,18 +41,20 @@ class PaymentRepositoryUser {
     apiProvider = new ApiProvider();
   }
 
-  Future<CommonResponse> validateCheckSum(String name ,email,phone,orderid) async {
+  Future validateCheckSum(String name ,email,phone,orderid) async {
     final response = await apiProvider
         .getInstance()
         .post('paytm/transactionstatus'
         , data: {"name":name,"email":email,"phone":phone,"payment_type":"Donation","order_id":orderid});
-    return CommonResponse.fromJson(jsonDecode(response.data));
+    Get.back();
+    Fluttertoast.showToast(msg:"Payment Success");
+    return response;
   }
   Future validateCheckSumfund(String orderId, String fundraiserId) async {
     final response = await apiProvider
         .getInstance()
         .post('paytm/fundraiser-transaction-status'
         , data: {"order_id":orderId, "fundraiser_id": int.parse(fundraiserId)});
-    return response.data;
+    return response;
   }
 }

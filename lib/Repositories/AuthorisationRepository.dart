@@ -24,9 +24,11 @@ class AuthorisationRepository {
   }
 
   Future<CommonResponse> registerUser(String body) async {
+    print("body->>>>>>${body}");
     Response response = await apiProvider
         .getInstance()
         .post(RemoteConfig.registerUser, data: body);
+    print("body->>>>>>${response}");
     return CommonResponse.fromJson(response.data);
   }
 
